@@ -3,3 +3,4 @@ pydantic
 SQLAlchemy
 sqlalchemy-sqlitecloud
 pytz
+uvicorn
