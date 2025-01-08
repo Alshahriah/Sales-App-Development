@@ -2,3 +2,4 @@ fastapi
 pydantic
 SQLAlchemy
 sqlalchemy-sqlitecloud
+pytz
