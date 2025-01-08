@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Region</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-roboto">
+    <div class="container mx-auto px-4">
+        <div class="card bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-blue-600 font-bold text-2xl mb-4">Add Region</h2>
+            <form method="POST" action="/admin/addregion">
+                <div class="mb-4">
+                    <label for="region_name" class="block text-gray-700 font-bold mb-2">Region Name</label>
+                    <input type="text" id="region_name" name="region_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label for="region_code" class="block text-gray-700 font-bold mb-2">Region Code</label>
+                    <input type="text" id="region_code" name="region_code" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-full">Add Region</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

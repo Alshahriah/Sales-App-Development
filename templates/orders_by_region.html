@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders by Region</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-roboto">
+    <div class="container mx-auto px-4">
+        <div class="card bg-white p-6 rounded-lg shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-blue-600 font-bold text-2xl">Orders for {{ region.region_name }}</h2>
+                <button class="bg-blue-500 text-white py-2 px-4 rounded-full" onclick="toggleCurrency()">Toggle Currency (USD/INR)</button>
+            </div>
+            <div class="table-container mt-6 max-w-full mx-auto">
+                <table class="table-auto w-full bg-white border-collapse border border-gray-300">
+                    <thead>
+                        <tr>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Sl No</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Product Name</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Supplier</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Sale Price</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Amazon Commission</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Quantity</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Buy Price</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Estimated Delivery</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Sale Date</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Delivery Status</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Buyer Name</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Buyer Address</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sale in sales %}
+                        <tr>
+                            <td class="border px-4 py-2">{{ loop.index }}</td>
+                            <td class="border px-4 py-2">{{ sale.product_name }}</td>
+                            <td class="border px-4 py-2">{{ sale.supplier_name }}</td>
+                            <td class="border px-4 py-2 sale-price" data-usd="{{ sale.sale_price }}">${{ sale.sale_price }}</td>
+                            <td class="border px-4 py-2 commission-value" data-usd="{{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}">${{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}</td>
+                            <td class="border px-4 py-2">{{ sale.quantity }}</td>
+                            <td class="border px-4 py-2 buy-price" data-usd="{{ sale.buy_price }}">
+                                <a href="{{ sale.payment_link }}" target="_blank" class="text-blue-500 underline">${{ sale.buy_price }}</a>
+                            </td>
+                            <td class="border px-4 py-2">{{ sale.estimated_delivery }}</td>
+                            <td class="border px-4 py-2">{{ sale.sale_date }}</td>
+                            <td class="border px-4 py-2 {% if sale.delivery_status == 'Received' %}bg-green-500 text-white{% elif sale.delivery_status == 'Shipped' %}bg-blue-500 text-white{% elif sale.delivery_status == 'Delivered' %}bg-yellow-500 text-black{% elif sale.delivery_status == 'Cancelled' %}bg-red-500 text-white{% elif sale.delivery_status == 'Returned' %}bg-gray-500 text-white{% endif %}">
+                                <select class="form-control status-dropdown bg-transparent" data-sale-id="{{ sale.id }}" onchange="updateDeliveryStatus({{ sale.id }}, this.value)">
+                                    <option class="bg-white text-black" value="Received" {% if sale.delivery_status == "Received" %}selected{% endif %}>Received</option>
+                                    <option class="bg-white text-black" value="Shipped" {% if sale.delivery_status == "Shipped" %}selected{% endif %}>Shipped</option>
+                                    <option class="bg-white text-black" value="Delivered" {% if sale.delivery_status == "Delivered" %}selected{% endif %}>Delivered</option>
+                                    <option class="bg-white text-black" value="Cancelled" {% if sale.delivery_status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                                    <option class="bg-white text-black" value="Returned" {% if sale.delivery_status == "Returned" %}selected{% endif %}>Returned</option>
+                                </select>
+                            </td>
+                            <td class="border px-4 py-2">{{ sale.buyer_name }}</td>
+                            <td class="border px-4 py-2">{{ sale.buyer_address }}</td>
+                            <td class="border px-2 py-1 flex flex-col space-y-1">
+                                <a href="/edit/{{ sale.id }}" class="bg-yellow-500 text-white text-xs py-1 px-2 rounded border border-gray-300">Edit</a>
+                                <a href="/orderdetails/{{ sale.id }}" class="bg-blue-500 text-white text-xs py-1 px-2 rounded border border-gray-300">Details</a>
+                                <form method="post" action="/delete/{{ sale.id }}" style="display:inline;">
+                                    <button type="submit" class="bg-red-500 text-white text-xs py-1 px-2 rounded border border-gray-300">Delete</button>
+                                </form>
+                                <a target="_blank" href="{{ sale.manage_link }}" class="bg-green-500 text-white text-xs py-1 px-2 rounded border border-gray-300">Manage</a>
+                                {% if sale.amazon_link %}
+                                <a href="{{ sale.amazon_link }}" target="_blank" class="bg-blue-500 text-white text-xs py-1 px-2 rounded border border-gray-300">Amazon</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currency = 'USD';
+        let exchangeRate;
+    
+        async function fetchExchangeRate() {
+            const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+            const data = await response.json();
+            exchangeRate = data.rates.INR;
+        }
+    
+        function formatCurrency(value, targetCurrency) {
+            value = parseFloat(value.replace(/[^\d.-]/g, '')); // Remove any existing currency symbols
+            if (targetCurrency === 'USD') {
+                return '$' + value.toFixed(2);
+            } else {
+                return '₹' + (value * exchangeRate).toFixed(2);
+            }
+        }
+    
+        async function toggleCurrency() {
+            if (!exchangeRate) await fetchExchangeRate();
+            const salePrices = document.querySelectorAll('.sale-price');
+            const buyPrices = document.querySelectorAll('.buy-price a');
+            const commissionValues = document.querySelectorAll('.commission-value');
+            
+            if (currency === 'USD') {
+                salePrices.forEach(price => price.innerHTML = formatCurrency(price.getAttribute('data-usd'), 'INR'));
+                buyPrices.forEach(price => price.innerHTML = formatCurrency(price.parentElement.getAttribute('data-usd'), 'INR'));
+                commissionValues.forEach(value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'INR'));
+                currency = 'INR';
+            } else {
+                salePrices.forEach(price => price.innerHTML = formatCurrency(price.getAttribute('data-usd'), 'USD'));
+                buyPrices.forEach(price => price.innerHTML = formatCurrency(price.parentElement.getAttribute('data-usd'), 'USD'));
+                commissionValues.forEach(value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'USD'));
+                currency = 'USD';
+            }
+        }
+    
+        document.addEventListener('DOMContentLoaded', fetchExchangeRate);
+    </script>
+    
+</body>
+</html>

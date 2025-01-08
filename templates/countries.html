@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regions</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-roboto">
+    <div class="container mx-auto px-4">
+        <div class="card bg-white p-6 rounded-lg shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-blue-600 font-bold text-2xl">Regions</h2>
+                <a href="/admin/addregion" class="bg-green-500 text-white py-2 px-4 rounded-full">Add Region</a>
+            </div>
+            <div class="table-container mt-6 max-w-full mx-auto">
+                <table class="table-auto w-full bg-white border-collapse border border-gray-300">
+                    <thead>
+                        <tr>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Region Name</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Region Code</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Orders Count</th>
+                            <th class="border bg-blue-500 text-white py-2 px-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for region in regions %}
+                        <tr>
+                            <td class="border px-4 py-2">{{ region.region_name }}</td>
+                            <td class="border px-4 py-2">{{ region.region_code }}</td>
+                            <td class="border px-4 py-2">{{ region.orders_count }}</td>
+                            <td class="border px-4 py-2">
+                                <a href="/admin/orders_by_region/{{ region.region_id }}" class="bg-blue-500 text-white py-1 px-3 rounded">View Orders</a>
+                            </td>                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" class="border bg-gray-300 py-2 px-4 font-bold">Total Orders</td>
+                            <td colspan="2" class="border bg-gray-300 py-2 px-4 font-bold">{{ total_orders }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

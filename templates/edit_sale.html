@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Sale</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn-custom {
+            border-radius: 30px;
+        }
+        .card {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .heading-link {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .heading-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h2>Edit Sale</h2>
+                <form method="post" action="/edit/{{ sale.id }}">
+                    <input type="hidden" name="referrer" value="{{ request.headers.get('Referer') }}">
+                    <div class="form-group">
+                        <label for="product_name">Product Name</label>
+                        <input type="text" class="form-control" id="product_name" name="product_name" value="{{ sale.product_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product_description">Product Description</label>
+                        <textarea class="form-control" id="product_description" name="product_description">{{ sale.product_description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="supplier_name">Supplier Name</label>
+                        <input type="text" class="form-control" id="supplier_name" name="supplier_name" value="{{ sale.supplier_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sale_price">Sale Price</label>
+                        <input type="text" class="form-control" id="sale_price" name="sale_price" value="{{ sale.sale_price }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amazon_commission">Amazon Commission (%)</label>
+                        <input type="text" class="form-control" id="amazon_commission" name="amazon_commission" value="{{ sale.amazon_commission }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="forexFees">Forex Fees (%)</label>
+                        <select class="form-control" id="forexFees" name="forex_fees">
+                            <option value="1" {% if sale.forex_fees == "1" %}selected{% endif %}>1</option>
+                            <option value="2" {% if sale.forex_fees == "2" %}selected{% endif %}>2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" value="{{ sale.quantity }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="buy_price">Buy Price</label>
+                        <input type="text" class="form-control" id="buy_price" name="buy_price" value="{{ sale.buy_price }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="estimated_delivery">Estimated Delivery</label>
+                        <input type="date" class="form-control" id="estimated_delivery" name="estimated_delivery" value="{{ sale.estimated_delivery }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="sale_date">Sale Date</label>
+                        <input type="date" class="form-control" id="sale_date" name="sale_date" value="{{ sale.sale_date }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="buyer_name">Buyer Name</label>
+                        <input type="text" class="form-control" id="buyer_name" name="buyer_name" value="{{ sale.buyer_name }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="buyer_address">Buyer Address</label>
+                        <textarea class="form-control" id="buyer_address" name="buyer_address">{{ sale.buyer_address }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="delivery_status">Delivery Status</label>
+                        <select class="form-control" id="delivery_status" name="delivery_status">
+                            <option value="Received" {% if sale.delivery_status == "Received" %}selected{% endif %}>Received</option>
+                            <option value="Shipped" {% if sale.delivery_status == "Shipped" %}selected{% endif %}>Shipped</option>
+                            <option value="Delivered" {% if sale.delivery_status == "Delivered" %}selected{% endif %}>Delivered</option>
+                            <option value="Cancelled" {% if sale.delivery_status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                            <option value="Returned" {% if sale.delivery_status == "Returned" %}selected{% endif %}>Returned</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="manage_link">Manage Link</label>
+                        <input type="text" class="form-control" id="manage_link" name="manage_link" value="{{ sale.manage_link }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_link">Payment Link</label>
+                        <input type="text" class="form-control" id="payment_link" name="payment_link" value="{{ sale.payment_link }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="amazonLink">Amazon Link</label>
+                        <input type="url" class="form-control" id="amazonLink" name="amazon_link" value="{{ sale.amazon_link if sale.amazon_link else '' }}" placeholder="Amazon order link">
+                    </div>
+                    <div class="form-group">
+                        <label for="region_id">Region</label>
+                        <select class="form-control" id="region_id" name="region_id">
+                            {% for region in regions %}
+                            <option value="{{ region.id }}" {% if sale.region_id == region.id %}selected{% endif %}>{{ region.region_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-custom">Update Sale</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
