@@ -5,3 +5,4 @@ sqlalchemy-sqlitecloud
 pytz
 uvicorn
 itsdangerous
+jinja2
