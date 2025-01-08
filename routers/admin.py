@@ -5,13 +5,35 @@ from sqlalchemy import desc, func
 from datetime import date, datetime, timedelta
 from typing import Optional
 from database import get_db
-from models import Sale, CRUDLog, UpdateStatusRequest, Region
+from models import Sale, CRUDLog, UpdateStatusRequest, Region, DeletedSale
 from pathlib import Path
 from fastapi.templating import Jinja2Templates
 
 router = APIRouter()
 BASE_DIR = Path(__file__).resolve().parent.parent
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
+
+@router.get("/admin/deleted_orders", response_class=HTMLResponse)
+async def deleted_orders(
+    request: Request,
+    db: Session = Depends(get_db),
+    page: int = Query(1, description="Page number"),
+    page_size: int = Query(10, description="Number of orders per page")
+):
+    if request.cookies.get("authenticated") != "true":
+        return RedirectResponse("/login")
+
+    query = db.query(DeletedSale)
+    total_orders = query.count()
+    sales = query.order_by(desc(DeletedSale.sale_date)).offset((page - 1) * page_size).limit(page_size).all()
+
+    return templates.TemplateResponse("deleted_orders.html", {
+        "request": request,
+        "sales": sales,
+        "page": page,
+        "page_size": page_size,
+        "total_orders": total_orders
+    })
 
 @router.get("/admin", response_class=HTMLResponse)
 async def admin(request: Request, db: Session = Depends(get_db), page: int = 1, per_page: int = 10):
@@ -132,3 +154,123 @@ async def add_region(region_name: str = Form(...), region_code: str = Form(...),
     db.add(new_region)
     db.commit()
     return RedirectResponse("/admin/countries", status_code=303)
+
+@router.post("/delete/{sale_id}")
+async def delete_sale(sale_id: int, db: Session = Depends(get_db)):
+    sale = db.query(Sale).filter(Sale.id == sale_id).first()
+    if sale:
+        deleted_sale = DeletedSale(
+            id=sale.id,
+            product_name=sale.product_name,
+            product_description=sale.product_description,
+            supplier_name=sale.supplier_name,
+            order_datetime=sale.order_datetime,
+            sale_price=sale.sale_price,
+            amazon_commission=sale.amazon_commission,
+            quantity=sale.quantity,
+            buy_price=sale.buy_price,
+            estimated_delivery=sale.estimated_delivery,
+            sale_date=sale.sale_date,
+            buyer_name=sale.buyer_name,
+            buyer_address=sale.buyer_address,
+            delivery_status=sale.delivery_status,
+            manage_link=sale.manage_link,
+            amazon_link=sale.amazon_link,
+            payment_link=sale.payment_link,
+            region_id=sale.region_id,
+            forex_fees=sale.forex_fees
+        )
+        db.add(deleted_sale)
+        db.delete(sale)
+        db.commit()
+    return RedirectResponse("/admin/view_orders", status_code=303)
+
+@router.get("/admin/restore_order/{sale_id}")
+async def restore_sale(sale_id: int, db: Session = Depends(get_db)):
+    deleted_sale = db.query(DeletedSale).filter(DeletedSale.id == sale_id).first()
+    if deleted_sale:
+        sale = Sale(
+            id=deleted_sale.id,
+            product_name=deleted_sale.product_name,
+            product_description=deleted_sale.product_description,
+            supplier_name=deleted_sale.supplier_name,
+            order_datetime=deleted_sale.order_datetime,
+            sale_price=deleted_sale.sale_price,
+            amazon_commission=deleted_sale.amazon_commission,
+            quantity=deleted_sale.quantity,
+            buy_price=deleted_sale.buy_price,
+            estimated_delivery=deleted_sale.estimated_delivery,
+            sale_date=deleted_sale.sale_date,
+            buyer_name=deleted_sale.buyer_name,
+            buyer_address=deleted_sale.buyer_address,
+            delivery_status=deleted_sale.delivery_status,
+            manage_link=deleted_sale.manage_link,
+            amazon_link=deleted_sale.amazon_link,
+            payment_link=deleted_sale.payment_link,
+            region_id=deleted_sale.region_id,
+            forex_fees=deleted_sale.forex_fees
+        )
+        db.add(sale)
+        db.delete(deleted_sale)
+        db.commit()
+    return RedirectResponse("/admin/deleted_orders", status_code=303)
+
+@router.post("/delete/{sale_id}")
+async def delete_sale(sale_id: int, db: Session = Depends(get_db)):
+    sale = db.query(Sale).filter(Sale.id == sale_id).first()
+    if sale:
+        deleted_sale = DeletedSale(
+            id=sale.id,
+            product_name=sale.product_name,
+            product_description=sale.product_description,
+            supplier_name=sale.supplier_name,
+            order_datetime=sale.order_datetime,
+            sale_price=sale.sale_price,
+            amazon_commission=sale.amazon_commission,
+            quantity=sale.quantity,
+            buy_price=sale.buy_price,
+            estimated_delivery=sale.estimated_delivery,
+            sale_date=sale.sale_date,
+            buyer_name=sale.buyer_name,
+            buyer_address=sale.buyer_address,
+            delivery_status=sale.delivery_status,
+            manage_link=sale.manage_link,
+            amazon_link=sale.amazon_link,
+            payment_link=sale.payment_link,
+            region_id=sale.region_id,
+            forex_fees=sale.forex_fees
+        )
+        db.add(deleted_sale)
+        db.delete(sale)
+        db.commit()
+    return RedirectResponse("/admin/view_orders", status_code=303)
+
+@router.get("/admin/restore_order/{sale_id}")
+async def restore_sale(sale_id: int, db: Session = Depends(get_db)):
+    deleted_sale = db.query(DeletedSale).filter(DeletedSale.id == sale_id).first()
+    if deleted_sale:
+        sale = Sale(
+            id=deleted_sale.id,
+            product_name=deleted_sale.product_name,
+            product_description=deleted_sale.product_description,
+            supplier_name=deleted_sale.supplier_name,
+            order_datetime=deleted_sale.order_datetime,
+            sale_price=deleted_sale.sale_price,
+            amazon_commission=deleted_sale.amazon_commission,
+            quantity=deleted_sale.quantity,
+            buy_price=deleted_sale.buy_price,
+            estimated_delivery=deleted_sale.estimated_delivery,
+            sale_date=deleted_sale.sale_date,
+            buyer_name=deleted_sale.buyer_name,
+            buyer_address=deleted_sale.buyer_address,
+            delivery_status=deleted_sale.delivery_status,
+            manage_link=deleted_sale.manage_link,
+            amazon_link=deleted_sale.amazon_link,
+            payment_link=deleted_sale.payment_link,
+            region_id=deleted_sale.region_id,
+            forex_fees=deleted_sale.forex_fees
+        )
+        db.add(sale)
+        db.delete(deleted_sale)
+        db.commit()
+    return RedirectResponse("/admin/deleted_orders", status_code=303)

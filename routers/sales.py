@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from datetime import date, datetime
 from database import get_db
-from models import Sale, CRUDLog, UpdateStatusRequest, Region
+from models import Sale, CRUDLog, UpdateStatusRequest, Region, DeletedSale
 from pathlib import Path
 from fastapi.templating import Jinja2Templates
 
@@ -145,8 +145,34 @@ async def delete_sale(sale_id: int, request: Request, db: Session = Depends(get_
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")
 
+    # Create a DeletedSale record
+    deleted_sale = DeletedSale(
+        id=sale.id,
+        product_name=sale.product_name,
+        product_description=sale.product_description,
+        supplier_name=sale.supplier_name,
+        order_datetime=sale.order_datetime,
+        sale_price=sale.sale_price,
+        amazon_commission=sale.amazon_commission,
+        quantity=sale.quantity,
+        buy_price=sale.buy_price,
+        estimated_delivery=sale.estimated_delivery,
+        sale_date=sale.sale_date,
+        buyer_name=sale.buyer_name,
+        buyer_address=sale.buyer_address,
+        delivery_status=sale.delivery_status,
+        manage_link=sale.manage_link,
+        amazon_link=sale.amazon_link,
+        payment_link=sale.payment_link,
+        region_id=sale.region_id,
+        forex_fees=sale.forex_fees
+    )
+
+    # Add DeletedSale record and delete original sale
+    db.add(deleted_sale)
     db.delete(sale)
     db.commit()
+    
     log_crud_action(
         action="DELETE",
         model="Sale",
@@ -155,6 +181,7 @@ async def delete_sale(sale_id: int, request: Request, db: Session = Depends(get_
         details=f"Deleted sale <a href='/orderdetails/{sale.id}'>{sale.buyer_name}</a> for product '{sale.product_name}'"
     )
     return RedirectResponse("/admin", status_code=303)
+
 
 @router.get("/orderdetails/{id}", response_class=HTMLResponse)
 async def order_details(id: int, request: Request, db: Session = Depends(get_db)):
