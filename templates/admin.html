@@ -4,186 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISM Admin - All Orders</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body class="bg-gray-100 font-roboto">
-    <div class="container mx-auto px-4">
-        <div class="card bg-white p-6 rounded-lg shadow-lg">
-            <div class="header-container flex justify-between items-center">
-                <h2 class="text-blue-600 font-bold text-2xl">
-                    <a href="/" class="heading-link">ISM</a> Admin
-                </h2>
-                <div class="toggle-btn mt-4">
-                    <a href="/create_sale" class="bg-green-500 text-white py-2 px-4 rounded-full ml-2">Create Sale +</a>
-                    <a href="/admin/countries/" class="bg-green-500 text-white py-2 px-4 rounded-full ml-2">Regionwise</a>
-                    <a href="/admin/view_orders/" class="bg-green-500 text-white py-2 px-4 rounded-full ml-2">View Orders</a>
-                    <button class="btn btn-primary btn-custom bg-blue-500 text-white py-2 px-4 rounded-full" onclick="toggleCurrency()">Toggle Currency (USD/INR)</button>
-                </div>
-            </div>
-            <div class="table-container mt-6 max-w-full mx-auto">
-                <table class="table-auto w-full bg-white border-collapse border border-gray-300">
-                    <thead>
-                        <tr>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Sl No</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Product Name</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Supplier</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Sale Price</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Amazon Commission</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Forex Fees</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Quantity</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Buy Price</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Estimated Delivery</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Sale Date</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Delivery Status</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Buyer Name</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Buyer Address</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Region</th>
-                            <th class="border bg-blue-500 text-white py-2 px-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for sale in sales %}
-                        <tr>
-                            <td class="border px-4 py-2">{{ (page - 1) * per_page + loop.index }}</td>
-                            <td class="border px-4 py-2">{{ sale.product_name }}</td>
-                            <td class="border px-4 py-2">{{ sale.supplier_name }}</td>
-                            <td class="border px-4 py-2 sale-price" data-usd="{{ sale.sale_price }}">${{ sale.sale_price }}</td>
-                            <td class="border px-4 py-2 commission-value" data-usd="{{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}">${{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}</td>
-                            <td class="border px-4 py-2">{{ sale.forex_fees }}</td>
-                            <td class="border px-4 py-2">{{ sale.quantity }}</td>
-                            <td class="border px-4 py-2 buy-price" data-usd="{{ sale.buy_price * (1 + 0.0118 * (sale.forex_fees or 0)) }}">
-                                <a href="{{ sale.payment_link }}" target="_blank" class="text-blue-500 underline">${{ (sale.buy_price * (1 + 0.0118 * (sale.forex_fees or 0))) | round(2)}}</a>
-                            </td>                            
-                            <td class="border px-4 py-2">{{ sale.estimated_delivery }}</td>
-                            <td class="border px-4 py-2">{{ sale.sale_date }}</td>
-                            <td class="border px-4 py-2 {% if sale.delivery_status == 'Received' %}bg-green-500 text-white{% elif sale.delivery_status == 'Shipped' %}bg-blue-500 text-white{% elif sale.delivery_status == 'Delivered' %}bg-yellow-500 text-black{% elif sale.delivery_status == 'Cancelled' %}bg-red-500 text-white{% elif sale.delivery_status == 'Returned' %}bg-gray-500 text-white{% endif %}">
-                                <select class="form-control status-dropdown bg-transparent" data-sale-id="{{ sale.id }}" onchange="updateDeliveryStatus({{ sale.id }}, this.value)">
-                                    <option class="bg-white text-black" value="Received" {% if sale.delivery_status == "Received" %}selected{% endif %}>Received</option>
-                                    <option class="bg-white text-black" value="Shipped" {% if sale.delivery_status == "Shipped" %}selected{% endif %}>Shipped</option>
-                                    <option class="bg-white text-black" value="Delivered" {% if sale.delivery_status == "Delivered" %}selected{% endif %}>Delivered</option>
-                                    <option class="bg-white text-black" value="Cancelled" {% if sale.delivery_status == "Cancelled" %}selected{% endif %}>Cancelled</option>
-                                    <option class="bg-white text-black" value="Returned" {% if sale.delivery_status == "Returned" %}selected{% endif %}>Returned</option>
-                                </select>
-                            </td>                            
-                            <td class="border px-4 py-2">{{ sale.buyer_name }}</td>
-                            <td class="border px-4 py-2">{{ sale.buyer_address }}</td>
-                            <td class="border px-4 py-2">{{ sale.region.region_name }}</td> <!-- Display region name -->
-                            <td class="border px-2 py-1 flex flex-col space-y-1">
-                                <a href="/edit/{{ sale.id }}" class="bg-yellow-500 text-white py-1 px-2 text-sm rounded border border-gray-300">Edit</a>
-                                <a href="/orderdetails/{{ sale.id }}" class="bg-blue-500 text-white py-1 px-2 text-sm rounded border border-gray-300">Details</a>
-                                <form method="post" action="/delete/{{ sale.id }}" style="display:inline;">
-                                    <button type="submit" class="bg-red-500 text-white py-1 px-2 text-sm rounded border border-gray-300">Delete</button>
-                                </form>
-                                <a target="_blank" href="{{ sale.manage_link }}" class="bg-green-500 text-white py-1 px-2 text-sm rounded border border-gray-300">Manage</a>
-                                {% if sale.amazon_link %}
-                                <a target="_blank" href="{{ sale.amazon_link }}" class="bg-gray-500 text-white py-1 px-2 text-sm rounded border border-gray-300">Amazon</a>
-                                {% endif %}
-                            </td>                                                    
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-                <nav aria-label="Page navigation" class="mt-6">
-                    <ul class="pagination flex justify-center space-x-2">
-                        {% if page > 1 %}
-                        <li class="page-item">
-                            <a class="page-link bg-blue-500 text-white py-2 px-4 rounded" href="?page={{ page-1 }}&per_page={{ per_page }}">Previous</a>
-                        </li>
-                        {% endif %}
-                        
-                        {% for p in range(1, total_pages + 1) %}
-                        <li class="page-item {% if p == page %}active{% endif %}">
-                            <a class="page-link bg-blue-500 text-white py-2 px-4 rounded {% if p == page %}bg-blue-700{% endif %}" href="?page={{ p }}&per_page={{ per_page }}">{{ p }}</a>
-                        </li>
-                        {% endfor %}
-                        
-                        {% if page < total_pages %}
-                        <li class="page-item">
-                            <a class="page-link bg-blue-500 text-white py-2 px-4 rounded" href="?page={{ page+1 }}&per_page={{ per_page }}">Next</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <h2><a href="/">ISM Admin</a></h2>
+            <div class="toggle-btn">
+                <a href="/create_sale" class="bg-green-500 text-white py-2 px-4 rounded-full ml-2">Create Sale +</a>
+                <a href="/admin/countries/" class="bg-green-500 text-white py-2 px-4 rounded-full ml-2">Regionwise</a>
+                <a href="/admin/view_orders/" class="bg-green-500 text-white py-2 px-4 rounded-full ml-2">View Orders</a>
+                <button class="bg-blue-500 text-white py-2 px-4 rounded-full" onclick="toggleCurrency()">Toggle Currency (USD/INR)</button>
             </div>
         </div>
-    </div>
-    <script>
-        async function updateDeliveryStatus(saleId, newStatus) {
-            const response = await fetch(`/update_status/${saleId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ delivery_status: newStatus })
-            });
-            if (response.ok) {
-                const statusSelect = document.querySelector(`select[data-sale-id="${saleId}"]`);
-                const parentCell = statusSelect.parentElement;
-                parentCell.className = 'border px-4 py-2'; // Retain the original classes
-                const newStatusClass = `status-${newStatus.toLowerCase().replace(/\s+/g, '-')}`;
-                parentCell.classList.add(newStatusClass);
-                alert('Status updated successfully');
-            } else {
-                alert('Failed to update status');
-            }
-        }
-    
-        document.addEventListener('DOMContentLoaded', function() {
-            const rows = document.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                const statusSelect = row.querySelector('select.status-dropdown');
-                const status = statusSelect.value.toLowerCase().replace(/\s+/g, '-');
-                const parentCell = statusSelect.parentElement;
-                parentCell.classList.add(`status-${status}`);
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Product Name</th>
+                        <th>Supplier</th>
+                        <th>Sale Price</th>
+                        <th>Amazon Commission</th>
+                        <th>Forex Fees</th>
+                        <th>Quantity</th>
+                        <th>Buy Price</th>
+                        <th>Estimated Delivery</th>
+                        <th>Sale Date</th> <!-- Ensuring this column is correctly placed -->
+                        <th>Delivery Status</th>
+                        <th>Buyer Name</th>
+                        <th>Buyer Address</th>
+                        <th>Region</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in sales %}
+                    <tr>
+                        <td class="border px-4 py-2">{{ (page - 1) * per_page + loop.index }}</td>
+                        <td class="border px-4 py-2">{{ sale.product_name }}</td>
+                        <td class="border px-4 py-2">{{ sale.supplier_name }}</td>
+                        <td class="border px-4 py-2 sale-price" data-usd="{{ sale.sale_price }}">${{ sale.sale_price }}</td>
+                        <td class="border px-4 py-2 commission-value" data-usd="{{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}">${{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}</td>
+                        <td class="border px-4 py-2">{{ sale.forex_fees }}</td>
+                        <td class="border px-4 py-2">{{ sale.quantity }}</td>
+                        <td class="border px-4 py-2 buy-price" data-usd="{{ sale.buy_price * (1 + 0.0118 * (sale.forex_fees or 0)) }}">
+                            <a href="{{ sale.payment_link }}" target="_blank" class="light-purple">${{ (sale.buy_price * (1 + 0.0118 * (sale.forex_fees or 0))) | round(2)}}</a>
+                        </td>
+                        <td class="border px-4 py-2">{{ sale.estimated_delivery }}</td>
+                        <td class="border px-4 py-2">{{ sale.sale_date }}</td> <!-- Adding sale date column correctly -->
+                        <td class="border px-4 py-2">
+                            <span class="delivery-indicator {{ sale.delivery_status | lower }}"></span>
+                            <span class="delivery-status-text">{{ sale.delivery_status }}</span>
+                            <select class="form-control status-dropdown bg-transparent" data-sale-id="{{ sale.id }}" onchange="updateDeliveryStatus({{ sale.id }}, this.value)">
+                                <option class="bg-white text-black" value="Received" {% if sale.delivery_status == "Received" %}selected{% endif %}>Received</option>
+                                <option class="bg-white text-black" value="Shipped" {% if sale.delivery_status == "Shipped" %}selected{% endif %}>Shipped</option>
+                                <option class="bg-white text-black" value="Delivered" {% if sale.delivery_status == "Delivered" %}selected{% endif %}>Delivered</option>
+                                <option class="bg-white text-black" value="Cancelled" {% if sale.delivery_status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                                <option class="bg-white text-black" value="Returned" {% if sale.delivery_status == "Returned" %}selected{% endif %}>Returned</option>
+                            </select>
+                        </td>
+                        <td class="border px-2 py-1">{{ sale.buyer_name }}</td>
+                        <td class="border px-2 py-1">{{ sale.buyer_address }}</td>
+                        <td class="border px-4 py-2">{{ sale.region.region_name }}</td>
+                        <td class="border px-2 py-1 flex flex-col space-y-1">
+                            <a href="/edit/{{ sale.id }}" class="button"><i class="fas fa-edit"></i> Edit</a>
+                            <a href="/orderdetails/{{ sale.id }}" class="button"><i class="fas fa-info-circle"></i> Details</a>
+                            <form method="post" action="/delete/{{ sale.id }}" style="display:inline;">
+                                <button type="submit" class="button"><i class="fas fa-trash"></i> Delete</button>
+                            </form>
+                            <a target="_blank" href="{{ sale.manage_link }}" class="button"><i class="fas fa-cogs"></i> Manage</a>
+                            {% if sale.amazon_link %}
+                            <a target="_blank" href="{{ sale.amazon_link }}" class="button"><i class="fas fa-shopping-cart"></i> Amazon</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <nav aria-label="Page navigation" class="pagination">
+            <ul class="pagination">
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link bg-blue-500 text-white py-2 px-4 rounded-full" href="?page={{ page-1 }}&per_page={{ per_page }}">Previous</a>
+                </li>
+                {% endif %}
                 
-                statusSelect.addEventListener('change', function() {
-                    parentCell.className = 'border px-4 py-2'; // Retain the original classes
-                    const newStatus = this.value.toLowerCase().replace(/\s+/g, '-');
-                    parentCell.classList.add(`status-${newStatus}`);
-                });
-            });
-        });
-    
-        let currency = 'USD';
-        let exchangeRate;
-    
-        async function fetchExchangeRate() {
-            const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-            const data = await response.json();
-            exchangeRate = data.rates.INR;
-        }
-    
-        function formatCurrency(value, targetCurrency) {
-            value = parseFloat(value.replace(/[^\d.-]/g, '')); // Remove any existing currency symbols
-            if (targetCurrency === 'USD') {
-                return '$' + value.toFixed(2);
-            } else {
-                return '₹' + (value * exchangeRate).toFixed(2);
-            }
-        }
-    
-        async function toggleCurrency() {
-            if (!exchangeRate) await fetchExchangeRate();
-            const salePrices = document.querySelectorAll('.sale-price');
-            const buyPrices = document.querySelectorAll('.buy-price a');
-            const commissionValues = document.querySelectorAll('.commission-value');
-            
-            if (currency === 'USD') {
-                salePrices.forEach(price => price.innerHTML = formatCurrency(price.getAttribute('data-usd'), 'INR'));
-                buyPrices.forEach(price => price.innerHTML = formatCurrency(price.parentElement.getAttribute('data-usd'), 'INR'));
-                commissionValues.forEach(value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'INR'));
-                currency = 'INR';
-            } else {
-                salePrices.forEach(price => price.innerHTML = formatCurrency(price.getAttribute('data-usd'), 'USD'));
-                buyPrices.forEach(price => price.innerHTML = formatCurrency(price.parentElement.getAttribute('data-usd'), 'USD'));
-                commissionValues.forEach(value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'USD'));
-                currency = 'USD';
-            }
-        }
-    
-        document.addEventListener('DOMContentLoaded', fetchExchangeRate);
-    </script>    
+                {% for p in range(1, total_pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link bg-blue-500 text-white py-2 px-4 rounded-full {% if p == page %}bg-blue-700{% endif %}" href="?page={{ p }}&per_page={{ per_page }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                
+                {% if page < total_pages %}
+                <li class="page-item">
+                    <a class="page-link bg-blue-500 text-white py-2 px-4 rounded-full" href="?page={{ page+1 }}&per_page={{ per_page }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <script src="/static/admin.js"></script>
 </body>
-</html>    
+</html>
