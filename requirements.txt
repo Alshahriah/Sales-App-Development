@@ -4,3 +4,4 @@ SQLAlchemy
 sqlalchemy-sqlitecloud
 pytz
 uvicorn
+itsdangerous
