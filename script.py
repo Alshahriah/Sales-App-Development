@@ -11,10 +11,10 @@ r = redis.Redis(
     password="ejjWDDXsKPbXenk5YLNLOghtkVMZfF4K",
 )
 
-success = r.hset('users', 'admin', 'yolobunda')
+success = r.hset('users', 'shakil', 'yolobunda')
 # True
 
-result = r.hget('users', 'admin')
+result = r.hget('users', 'shakil')
 print(result)
 # >>> bar
 
