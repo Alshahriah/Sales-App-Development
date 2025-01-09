@@ -1,0 +1,81 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #000000; /* AMOLED black */
+    color: #e0e0e0;
+    margin: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-container {
+    margin-top: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.btn-custom {
+    border-radius: 30px;
+}
+
+.card {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Navbar Styling */
+nav {
+    background: #1e3a8a;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+nav a:hover {
+    background-color: #1c3879;
+}
+
+body {
+    padding-top: 64px; /* Adjust the padding to match the navbar height */
+}
+
+/* Label Styling */
+label {
+    color: #000000; /* Change label color to black */
+}
+
+.heading-link {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.heading-link:hover {
+    text-decoration: underline;
+}

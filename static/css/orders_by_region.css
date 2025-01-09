@@ -1,0 +1,151 @@
+/* Body and Container Styling */
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Apply Bootstrap's default font */
+    background: #000000; /* AMOLED black */
+    color: #e0e0e0;
+    overflow-x: hidden;
+    margin: 0;
+    padding-top: 64px; /* Adjust the padding to match the navbar height */
+}
+
+.container {
+    max-width: 1600px; /* Increased the width to ensure fields stay within the box */
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header Styling */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #1a1a1a; /* Darker purple */
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.header-container h2 {
+    color: #8a2be2; /* Vibrant purple */
+    text-decoration: none;
+}
+
+.header-container h2:hover {
+    text-decoration: underline;
+}
+
+/* Toggle Button Styling */
+.toggle-btn {
+    background: #8a2be2; /* Vibrant purple */
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.toggle-btn:hover {
+    background: #5d3fd3; /* Slightly darker shade of the vibrant purple */
+}
+
+/* Card and Table Styling */
+.card {
+    background-color: #121212; /* Darker shade of black */
+    color: #e0e0e0;
+    margin: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.table-auto {
+    width: 100%;
+    background-color: #1a1a1a; /* Dark background for the table */
+    border-collapse: collapse;
+}
+
+.table-auto th,
+.table-auto td {
+    border: 1px solid #4a5568; /* Border color for table cells */
+    padding: 8px 12px;
+}
+
+.table-auto th {
+    background-color: #2d3748; /* Darker background for table headers */
+    color: #e0e0e0;
+}
+
+.table-auto td {
+    background-color: #1a1a1a; /* Same as table background */
+    color: #e0e0e0;
+}
+
+/* Link Styling */
+.table-auto a {
+    color: #63B3ED; /* Link color */
+    text-decoration: underline;
+}
+
+.table-auto a:hover {
+    color: #4299e1; /* Hover color for links */
+}
+
+/* Delivery Status Styling */
+.delivery-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.delivery-indicator.received {
+    background-color: #38a169; /* Green for received */
+}
+
+.delivery-indicator.shipped {
+    background-color: #3182ce; /* Blue for shipped */
+}
+
+.delivery-indicator.delivered {
+    background-color: #ecc94b; /* Yellow for delivered */
+}
+
+.delivery-indicator.cancelled {
+    background-color: #e53e3e; /* Red for cancelled */
+}
+
+.delivery-indicator.returned {
+    background-color: #a0aec0; /* Gray for returned */
+}
+
+.status-dropdown {
+    background-color: transparent; /* Transparent background */
+    color: #e0e0e0; /* Text color to match the theme */
+    padding: 5px;
+    border: none;
+    appearance: none;
+}
+
+.status-dropdown option {
+    background-color: #1a1a1a; /* Match dropdown option background */
+    color: #e0e0e0; /* Match dropdown option text color */
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}

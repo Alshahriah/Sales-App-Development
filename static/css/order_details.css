@@ -1,0 +1,108 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #000000; /* AMOLED black */
+    color: #e0e0e0;
+    margin: 0;
+    padding-top: 64px; /* Adjust the padding to match the navbar height */
+}
+
+.container {
+    max-width: 800px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+}
+
+/* Navbar Styling */
+nav {
+    background: #1e3a8a;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+nav a:hover {
+    background-color: #1c3879;
+}
+
+body {
+    padding-top: 64px; /* Adjust the padding to match the navbar height */
+}
+
+/* Card Styling */
+.card {
+    background-color: #121212; /* Darker shade of black */
+    color: #e0e0e0;
+    margin: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    word-wrap: break-word; /* Ensures links do not leave the box */
+}
+
+/* General Styling for Text */
+.card-text {
+    font-size: 1rem;
+    color: #e0e0e0;
+}
+
+.card-text strong {
+    color: #007bff;
+}
+
+.text-yellow-300 {
+    color: #FFD700; /* Color for buyer name */
+}
+
+.text-blue-400 {
+    color: #63B3ED; /* Color for links */
+}
+
+/* Button Styling */
+.btn-custom {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+.btn-custom:hover {
+    background-color: #0056b3;
+}
+
+.back-button,
+.edit-button {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.back-button {
+    margin-right: 10px;
+}
+
+.heading-link {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.heading-link:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,103 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #000000; /* AMOLED black */
+    color: #e0e0e0;
+    margin: 0;
+    padding-top: 64px; /* Adjust the padding to match the navbar height */
+}
+
+.container {
+    max-width: 1200px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+}
+
+/* Navbar Styling */
+nav {
+    background: #1e3a8a;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+nav a:hover {
+    background-color: #1c3879;
+}
+
+/* Table Styling */
+.table-auto {
+    width: 100%;
+    background-color: #1a1a1a; /* Dark background for the table */
+    border-collapse: collapse;
+}
+
+.table-auto th,
+.table-auto td {
+    border: 1px solid #4a5568; /* Border color for table cells */
+    padding: 8px 12px;
+}
+
+.table-auto th {
+    background-color: #2d3748; /* Darker background for table headers */
+    color: #e0e0e0;
+}
+
+.table-auto td {
+    background-color: #1a1a1a; /* Same as table background */
+    color: #e0e0e0;
+}
+
+.table-auto a {
+    color: #ffffff;
+    background-color: #1e3a8a;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.table-auto a:hover {
+    background-color: #1c3879;
+}
+
+/* Pagination Styling */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%; /* Ensure pagination takes up the full width */
+    position: relative; /* Prevents overlap with other elements */
+}
+
+.pagination .page-item .page-link {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    border: 1px solid #4a5568;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: #1c3879;
+    color: #ffffff;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #2d3748;
+    border-color: #2d3748;
+}

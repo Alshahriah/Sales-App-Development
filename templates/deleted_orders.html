@@ -4,66 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deleted Orders</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .table-container {
-            margin-top: 20px;
-        }
-        .table th, .table td {
-            padding: 0.5rem;
-        }
-        .pagination {
-            justify-content: center;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/deleted_orders.css"> <!-- External CSS -->
 </head>
-<body>
-    <div class="container">
-        <h2>Deleted Orders</h2>
-        <div class="table-container">
-            <table class="table table-striped">
+<body class="bg-gray-900 font-roboto">
+    <!-- Navbar -->
+    <nav class="bg-blue-900 text-white py-4 px-6 w-full fixed top-0 flex justify-between items-center z-50">
+        <h1 class="text-2xl font-bold"><a href="/" class="text-white">ISM</a></h1>
+        <div class="space-x-4">
+            <a href="/" class="hover:bg-blue-800 py-2 px-4 rounded">Dashboard</a>
+            <a href="/logs" class="hover:bg-blue-800 py-2 px-4 rounded">Logs</a>
+            <a href="/admin" class="hover:bg-blue-800 py-2 px-4 rounded">Admin</a>
+            <a href="/admin/countries" class="hover:bg-blue-800 py-2 px-4 rounded">Countries</a>
+            <a href="/admin/view_orders" class="hover:bg-blue-800 py-2 px-4 rounded">View Orders</a>
+            <a href="/create_sale" class="hover:bg-blue-800 py-2 px-4 rounded">Create Sale +</a>
+        </div>
+    </nav>
+    <div class="container mx-auto px-4 flex-1 flex flex-col items-center justify-center mt-20 pt-16">
+        <h2 class="text-3xl font-bold tracking-wide text-center text-white mb-4">Deleted Orders</h2>
+        <div class="table-container mt-6 max-w-full mx-auto">
+            <table class="table-auto w-full border-collapse border border-gray-700">
                 <thead>
                     <tr>
-                        <th>Product Name</th>
-                        <th>Supplier</th>
-                        <th>Sale Price</th>
-                        <th>Quantity</th>
-                        <th>Sale Date</th>
-                        <th>Buyer Name</th>
-                        <th>Actions</th>
+                        <th class="border bg-blue-500 text-white py-2 px-4">Product Name</th>
+                        <th class="border bg-blue-500 text-white py-2 px-4">Supplier</th>
+                        <th class="border bg-blue-500 text-white py-2 px-4">Sale Price</th>
+                        <th class="border bg-blue-500 text-white py-2 px-4">Quantity</th>
+                        <th class="border bg-blue-500 text-white py-2 px-4">Sale Date</th>
+                        <th class="border bg-blue-500 text-white py-2 px-4">Buyer Name</th>
+                        <th class="border bg-blue-500 text-white py-2 px-4">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for sale in sales %}
                     <tr>
-                        <td>{{ sale.product_name }}</td>
-                        <td>{{ sale.supplier_name }}</td>
-                        <td>${{ sale.sale_price }}</td>
-                        <td>{{ sale.quantity }}</td>
-                        <td>{{ sale.sale_date }}</td>
-                        <td>{{ sale.buyer_name }}</td>
-                        <td>
-                            <a href="/admin/restore_order/{{ sale.id }}" class="btn btn-success btn-sm">Restore</a>
+                        <td class="border px-4 py-2 text-gray-200">{{ sale.product_name }}</td>
+                        <td class="border px-4 py-2 text-gray-200">{{ sale.supplier_name }}</td>
+                        <td class="border px-4 py-2 text-gray-200">${{ sale.sale_price }}</td>
+                        <td class="border px-4 py-2 text-gray-200">{{ sale.quantity }}</td>
+                        <td class="border px-4 py-2 text-gray-200">{{ sale.sale_date }}</td>
+                        <td class="border px-4 py-2 text-gray-200">{{ sale.buyer_name }}</td>
+                        <td class="border px-4 py-2 text-gray-200">
+                            <a href="/admin/restore_order/{{ sale.id }}" class="bg-green-500 text-white py-1 px-3 rounded">Restore</a>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
             <!-- Pagination -->
-            <nav aria-label="Page navigation">
+            <!-- <nav aria-label="Page navigation" class="mt-4 flex justify-center">
                 <ul class="pagination">
                     {% for p in range(1, (total_orders // page_size) + 2) %}
                     <li class="page-item {% if page == p %}active{% endif %}">
-                        <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+                        <a class="page-link bg-gray-800 text-white py-2 px-3 rounded" href="?page={{ p }}">{{ p }}</a>
                     </li>
                     {% endfor %}
                 </ul>
-            </nav>
+            </nav> -->
         </div>
     </div>
 </body>

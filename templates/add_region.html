@@ -5,26 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Region</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/add_region.css"> <!-- External CSS -->
 </head>
-<body class="bg-gray-100 font-roboto">
-    <div class="container mx-auto px-4">
-        <div class="card bg-white p-6 rounded-lg shadow-lg">
-            <h2 class="text-blue-600 font-bold text-2xl mb-4">Add Region</h2>
-            <form method="POST" action="/admin/addregion">
-                <div class="mb-4">
-                    <label for="region_name" class="block text-gray-700 font-bold mb-2">Region Name</label>
-                    <input type="text" id="region_name" name="region_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="mb-4">
-                    <label for="region_code" class="block text-gray-700 font-bold mb-2">Region Code</label>
-                    <input type="text" id="region_code" name="region_code" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                </div>
-                <div class="flex items-center justify-between">
-                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-full">Add Region</button>
-                </div>
-            </form>
+<body class="bg-gray-900">
+    <div class="min-h-screen flex flex-col items-center justify-center">
+        <!-- Navbar -->
+        <nav class="bg-blue-900 text-white py-4 px-6 w-full flex justify-between items-center">
+            <h1 class="text-2xl font-bold"><a href="/" class="text-white">ISM</a></h1>
+            <div class="space-x-4">
+                <a href="/" class="hover:bg-blue-800 py-2 px-4 rounded">Dashboard</a>
+                <a href="/logs" class="hover:bg-blue-800 py-2 px-4 rounded">Logs</a>
+                <a href="/admin" class="hover:bg-blue-800 py-2 px-4 rounded">Admin</a>
+                <a href="/admin/countries" class="hover:bg-blue-800 py-2 px-4 rounded">Countries</a>
+                <a href="/admin/view_orders" class="hover:bg-blue-800 py-2 px-4 rounded">View Orders</a>
+                <a href="/create_sale" class="hover:bg-blue-800 py-2 px-4 rounded">Create Sale +</a>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6 flex flex-col justify-center items-center w-full">
+            <!-- Header -->
+            <div class="pb-6 text-center">
+                <h1 class="text-3xl font-bold tracking-wide text-white">Add Region</h1>
+            </div>
+
+            <!-- Form to Add Region -->
+            <div class="card bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mt-8"> <!-- Adjust the margin-top here -->
+                <form method="POST" action="/admin/addregion">
+                    <div class="mb-4">
+                        <label for="region_name" class="block text-white font-bold mb-2">Region Name</label>
+                        <input type="text" id="region_name" name="region_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="region_code" class="block text-white-700 font-bold mb-2">Region Code</label>
+                        <input type="text" id="region_code" name="region_code" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <button type="submit" class="bg-blue-500 text-white-700 py-2 px-4 rounded-full">Add Region</button>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
+    <script src="/static/js/add_region.js"></script>
 </body>
 </html>

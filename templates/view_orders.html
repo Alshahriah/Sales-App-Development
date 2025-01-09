@@ -4,48 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Orders</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .form-container {
-            margin-top: 20px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .btn-custom {
-            border-radius: 30px;
-        }
-        .card {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .table-container {
-            margin-top: 20px;
-        }
-        .table th, .table td {
-            padding: 0.5rem;
-        }
-        .pagination {
-            justify-content: center;
-        }
-        .search-bar {
-            margin-bottom: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/view_orders.css"> <!-- External CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <div class="card">
+        <div class="header-container">
+            <h2><a href="/">ISM Admin</a></h2>
+            <div class="toggle-btn">
+                <a href="/create_sale" class="bg-green-500 text-white py-2 px-4 rounded-full ml-2">Create Sale +</a>
+                <a href="/admin/countries/" class="bg-green-500 text-white py-2 px-4 rounded-full ml-2">Regionwise</a>
+                <a href="/admin/view_orders/" class="bg-green-500 text-white py-2 px-4 rounded-full ml-2">View Orders</a>
+                <button class="bg-blue-500 text-white py-2 px-4 rounded-full" onclick="toggleCurrency()">Toggle Currency (USD/INR)</button>
+            </div>
+        </div>
+        <div class="card bg-gray-800 text-white p-6 rounded-lg shadow-lg w-full max-w-full">
             <div class="card-body">
                 <h2>View Orders</h2>
                 <form method="get" action="/admin/view_orders">
@@ -122,7 +96,7 @@
                                 <td>${{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}</td>
                                 <td>{{ sale.quantity }}</td>
                                 <td>
-                                    <a href="{{ sale.payment_link }}" target="_blank" class="text-primary">${{ sale.buy_price }}</a>
+                                    <a href="{{ sale.payment_link }}" target="_blank" class="light-purple">${{ sale.buy_price }}</a>
                                 </td>
                                 <td>{{ sale.estimated_delivery }}</td>
                                 <td>{{ sale.sale_date }}</td>
@@ -130,14 +104,14 @@
                                 <td>{{ sale.buyer_name }}</td>
                                 <td>{{ sale.buyer_address }}</td>
                                 <td>
-                                    <a href="/edit/{{ sale.id }}" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="/orderdetails/{{ sale.id }}" class="btn btn-info btn-sm">Details</a>
+                                    <a href="/edit/{{ sale.id }}" class="button"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="/orderdetails/{{ sale.id }}" class="button"><i class="fas fa-info-circle"></i> Details</a>
                                     <form method="post" action="/delete/{{ sale.id }}" style="display:inline;">
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        <button type="submit" class="button"><i class="fas fa-trash"></i> Delete</button>
                                     </form>
-                                    <a target="_blank" href="{{ sale.manage_link }}" class="btn btn-success btn-sm">Manage</a>
+                                    <a target="_blank" href="{{ sale.manage_link }}" class="button"><i class="fas fa-cogs"></i> Manage</a>
                                     {% if sale.amazon_link %}
-                                    <a href="{{ sale.amazon_link }}" target="_blank" class="btn btn-primary btn-sm">Amazon</a>
+                                    <a href="{{ sale.amazon_link }}" target="_blank" class="button"><i class="fas fa-shopping-cart"></i> Amazon</a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -145,40 +119,34 @@
                         </tbody>
                     </table>
                     <!-- Pagination -->
-                    <nav aria-label="Page navigation">
+                    <nav aria-label="Page navigation" class="pagination">
                         <ul class="pagination">
+                            {% if page > 1 %}
+                            <li class="page-item">
+                                <a class="page-link bg-blue-500 text-white py-2 px-4 rounded-full" href="?page={{ page-1 }}&per_page={{ page_size }}">Previous</a>
+                            </li>
+                            {% endif %}
+                            
                             {% for p in range(1, (total_orders // page_size) + 2) %}
                             <li class="page-item {% if page == p %}active{% endif %}">
-                                <a class="page-link" href="?{% if period %}period={{ period }}&{% endif %}{% if value %}value={{ value }}&{% endif %}{% if delivery_status %}delivery_status={{ delivery_status }}&{% endif %}{% if ship_by %}ship_by={{ ship_by }}&{% endif %}{% if delivery_by %}delivery_by={{ delivery_by }}&{% endif %}{% if sale_date_start %}sale_date_start={{ sale_date_start }}&{% endif %}{% if sale_date_end %}sale_date_end={{ sale_date_end }}&{% endif %}page={{ p }}">{{ p }}</a>
+                                <a class="page-link bg-blue-500 text-white py-2 px-4 rounded-full {% if page == p %}bg-blue-700{% endif %}" href="?page={{ p }}&per_page={{ page_size }}">{{ p }}</a>
                             </li>
                             {% endfor %}
+                            
+                            {% if page < total_orders // page_size + 1 %}
+                            <li class="page-item">
+                                <a class="page-link bg-blue-500 text-white py-2 px-4 rounded-full" href="?page={{ page+1 }}&per_page={{ page_size }}">Next</a>
+                            </li>
+                            {% endif %}
                         </ul>
                     </nav>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        document.getElementById('searchBar').addEventListener('input', function() {
-            var searchTerm = this.value.toLowerCase();
-            var orderRows = document.querySelectorAll('#orderTable tr');
-
-            orderRows.forEach(function(row) {
-                var productName = row.cells[0].textContent.toLowerCase();
-                var supplierName = row.cells[1].textContent.toLowerCase();
-                var buyerName = row.cells[9].textContent.toLowerCase();
-
-                if (productName.includes(searchTerm) || supplierName.includes(searchTerm) || buyerName.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    </script>
+    <script src="/static/js/view_orders.js"></script>
 </body>
 </html>
