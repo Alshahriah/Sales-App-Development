@@ -20,8 +20,8 @@ async def deleted_orders(
     page: int = Query(1, description="Page number"),
     page_size: int = Query(10, description="Number of orders per page")
 ):
-    if request.cookies.get("authenticated") != "true":
-        return RedirectResponse("/login")
+    # if request.cookies.get("authenticated") != "true":
+    #     return RedirectResponse("/login")
 
     query = db.query(DeletedSale)
     total_orders = query.count()
@@ -37,8 +37,8 @@ async def deleted_orders(
 
 @router.get("/admin", response_class=HTMLResponse)
 async def admin(request: Request, db: Session = Depends(get_db), page: int = 1, per_page: int = 10):
-    if request.cookies.get("authenticated") != "true":
-        return RedirectResponse("/login")
+    # if request.cookies.get("authenticated") != "true":
+    #     return RedirectResponse("/login")
     total_sales = db.query(Sale).count()
     sales = db.query(Sale).order_by(desc(Sale.id)).offset((page - 1) * per_page).limit(per_page).all()
     total_pages = (total_sales + per_page - 1) // per_page
@@ -46,8 +46,8 @@ async def admin(request: Request, db: Session = Depends(get_db), page: int = 1, 
 
 @router.get("/admin/orders_by_region/{region_id}", response_class=HTMLResponse)
 async def orders_by_region(region_id: int, request: Request, db: Session = Depends(get_db)):
-    if request.cookies.get("authenticated") != "true":
-        return RedirectResponse("/login")
+    # if request.cookies.get("authenticated") != "true":
+    #     return RedirectResponse("/login")
     
     sales = db.query(Sale).filter(Sale.region_id == region_id).order_by(desc(Sale.id)).all()
     region = db.query(Region).filter(Region.id == region_id).first()
@@ -58,8 +58,8 @@ async def orders_by_region(region_id: int, request: Request, db: Session = Depen
 
 @router.get("/admin/countries", response_class=HTMLResponse)
 async def list_regions(request: Request, db: Session = Depends(get_db)):
-    if request.cookies.get("authenticated") != "true":
-        return RedirectResponse("/login")
+    # if request.cookies.get("authenticated") != "true":
+    #     return RedirectResponse("/login")
     
     regions = db.query(Region).all()
 
@@ -88,8 +88,8 @@ async def view_orders(
     page_size: int = Query(10, description="Number of orders per page"),
     search: Optional[str] = Query(None, description="Search term")
 ):
-    if request.cookies.get("authenticated") != "true":
-        return RedirectResponse("/login")
+    # if request.cookies.get("authenticated") != "true":
+    #     return RedirectResponse("/login")
 
     now = datetime.now()
     

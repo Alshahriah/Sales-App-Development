@@ -26,12 +26,14 @@
 </head>
 <body>
     <div>
-        <p class="message">Login Successful! Redirecting to Admin Page...</p>
+        <p class="message">Login Successful! Redirecting...</p>
     </div>
 
     <script>
         setTimeout(() => {
-            window.location.href = "/admin";
+            const urlParams = new URLSearchParams(window.location.search);
+            const next = urlParams.get('next') || '/admin';
+            window.location.href = next;
         }, 2000); // Redirect after 2 seconds
     </script>
 </body>
