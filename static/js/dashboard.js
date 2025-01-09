@@ -1,25 +1,3 @@
-// const totalBuyPrice = {{ total_buy_price }};
-// const totalAmazonCommission = {{ total_amazon_commission }};
-// const totalProfit = {{ total_profit }};
-
-// const receivedOrders = {{ received_orders }};
-// const returnedOrders = {{ returned_orders }};
-// const pendingOrders = {{ pending_orders }};
-// const shippedOrders = {{ shipped_orders }};
-// const cancelledOrdersCount = {{ cancelled_orders_count }};
-
-// const salesValueDates = [{% for date, value in sales_value %}'{{ date }}'{% if not loop.last %}, {% endif %}{% endfor %}];
-// const salesValueValues = [{% for date, value in sales_value %}{{ value }}{% if not loop.last %}, {% endif %}{% endfor %}];
-
-// const performanceDates = [{% for date, count in performance_orders %}'{{ date }}'{% if not loop.last %}, {% endif %}{% endfor %}];
-// const performanceCounts = [{% for date, count in performance_orders %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}];
-
-// const salesByRegionLabels = [{% for region, value in sales_by_region %}'{{ region }}'{% if not loop.last %}, {% endif %}{% endfor %}];
-// const salesByRegionValues = [{% for region, value in sales_by_region %}{{ value }}{% if not loop.last %}, {% endif %}{% endfor %}];
-
-// const salesBySupplierLabels = [{% for supplier, count in sales_by_supplier %}'{{ supplier }}'{% if not loop.last %}, {% endif %}{% endfor %}];
-// const salesBySupplierCounts = [{% for supplier, count in sales_by_supplier %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}];
-
 document.addEventListener('DOMContentLoaded', function() {
     const profitMarginData = {
         labels: ['Total Spent', 'Amazon Commission', 'Profit Margin'],
@@ -141,21 +119,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function toggleCurrency() {
         if (!exchangeRate) await fetchExchangeRate();
-        const salePrices = document.querySelectorAll('.sale-price');
-        const buyPrices = document.querySelectorAll('.buy-price a');
-        const commissionValues = document.querySelectorAll('.commission-value');
-        
+        const totalSalesElement = document.querySelector('#total-sales');
+        const averageSalesElement = document.querySelector('#average-sales-value');
+        const topProductsList = document.querySelectorAll('#top-products-list span[data-usd]');
+
         if (currency === 'USD') {
-            salePrices.forEach(price => price.innerHTML = formatCurrency(price.getAttribute('data-usd'), 'INR'));
-            buyPrices.forEach(price => price.innerHTML = formatCurrency(price.parentElement.getAttribute('data-usd'), 'INR'));
-            commissionValues.forEach(value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'INR'));
+            totalSalesElement.innerHTML = '₹' + (parseFloat(totalSalesElement.getAttribute('data-usd')) * exchangeRate).toFixed(2);
+            averageSalesElement.innerHTML = '₹' + (parseFloat(averageSalesElement.getAttribute('data-usd')) * exchangeRate).toFixed(2);
+            topProductsList.forEach(product => {
+                product.innerHTML = '₹' + (parseFloat(product.getAttribute('data-usd')) * exchangeRate).toFixed(2);
+            });
             currency = 'INR';
         } else {
-            salePrices.forEach(price => price.innerHTML = formatCurrency(price.getAttribute('data-usd'), 'USD'));
-            buyPrices.forEach(price => price.innerHTML = formatCurrency(price.parentElement.getAttribute('data-usd'), 'USD'));
-            commissionValues.forEach(value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'USD'));
+            totalSalesElement.innerHTML = '$' + parseFloat(totalSalesElement.getAttribute('data-usd')).toFixed(2);
+            averageSalesElement.innerHTML = '$' + parseFloat(averageSalesElement.getAttribute('data-usd')).toFixed(2);
+            topProductsList.forEach(product => {
+                product.innerHTML = '$' + parseFloat(product.getAttribute('data-usd')).toFixed(2);
+            });
             currency = 'USD';
         }
     }
+
     fetchExchangeRate();
+    window.toggleCurrency = toggleCurrency; // Ensure the function is accessible globally
 });

@@ -21,6 +21,8 @@
                 <a href="/admin/countries" class="block px-4 py-2 rounded hover:bg-blue-800">Countries</a>
                 <a href="/admin/view_orders" class="block px-4 py-2 rounded hover:bg-blue-800">View Orders</a>
                 <a href="/create_sale" class="block px-4 py-2 rounded hover:bg-blue-800">Create Sale +</a>
+                <!-- Replace the existing toggle button with the updated one -->
+                <a href="#" onclick="toggleCurrency()" class="block px-4 py-2 rounded hover:bg-blue-800">Toggle Currency (USD/INR)</a>
             </nav>
         </div>
 
@@ -36,8 +38,10 @@
                 <!-- Total Sales Done -->
                 <div class="card">
                     <h5 class="card-title">Total Sales Done</h5>
-                    <h2 class="text-2xl text-center mt-4 text-white">${{ total_sales }}</h2>
-                    <p class="text-center text-gray-400">Average Order Value: ${{ average_sales }}</p>
+                    <!-- Add data attributes for total and average sales to use in the currency toggle function -->
+                    <h2 id="total-sales" class="text-2xl text-center mt-4 text-white" data-usd="{{ total_sales }}">${{ total_sales }}</h2>
+                    <p id="average-sales" class="text-center text-gray-400" data-usd="{{ average_sales }}">Average Order Value: <span id="average-sales-value" data-usd="{{ average_sales }}">{{ average_sales }}</span></p>
+
                 </div>
 
                 <!-- Profit Margin -->
@@ -91,11 +95,11 @@
                 <!-- Top Products -->
                 <div class="card">
                     <h5 class="card-title">Top Products</h5>
-                    <ul class="mt-4">
+                    <ul id="top-products-list" class="mt-4">
                         {% for product in top_products %}
                         <li class="flex justify-between py-2 border-b border-gray-700">
                             <span class="text-white">{{ product[0] }} ({{ product[2] }} units)</span>
-                            <span class="text-gray-400">${{ product[1] }}</span>
+                            <span class="text-gray-400" data-usd="{{ product[1] }}">${{ product[1] }}</span>
                         </li>
                         {% endfor %}
                     </ul>

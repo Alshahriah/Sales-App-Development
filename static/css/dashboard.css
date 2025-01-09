@@ -38,18 +38,19 @@ body {
 }
 
 /* Toggle Button Styling */
-.toggle-btn a, .toggle-btn button {
+/* Styling for the Toggle Currency Button to match other buttons */
+.toggle-btn button {
     background: #8a2be2; /* Vibrant purple */
     border: none;
     color: white;
-    padding: 8px 15px;
+    padding: 10px 20px;
     margin: 0 5px;
-    border-radius: 20px;
+    border-radius: 50px; /* Consistent with other buttons */
     cursor: pointer;
     transition: background 0.3s;
 }
 
-.toggle-btn a:hover, .toggle-btn button:hover {
+.toggle-btn button:hover {
     background: #5d3fd3; /* Slightly darker shade of the vibrant purple */
 }
 
