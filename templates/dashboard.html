@@ -5,31 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        .chart-container {
-            position: relative;
-            height: 250px; /* Adjusted height to fit more charts */
-            width: 100%;
-        }
-        .card-title {
-            background-color: #f8f9fa;
-            padding: 5px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .card {
-            margin: 10px; /* Adjusted margin for better alignment */
-            padding: 15px;
-        }
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px; /* Adjusted gap for better alignment */
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/dashboard.css"> <!-- External CSS -->
 </head>
-<body class="bg-gray-100 font-roboto">
+<body class="bg-gray-900">
     <div class="flex min-h-screen">
         <!-- Sidebar -->
         <div class="w-64 bg-blue-900 text-white flex flex-col">
@@ -50,20 +28,20 @@
         <div class="flex-1 p-6 overflow-auto">
             <!-- Header -->
             <div class="flex justify-between items-center pb-6">
-                <h1 class="text-3xl font-bold tracking-wide">Dashboard</h1>
+                <h1 class="text-3xl font-bold tracking-wide text-white">Dashboard</h1>
             </div>
 
             <!-- Key Metrics and Charts -->
             <div class="grid-container">
                 <!-- Total Sales Done -->
-                <div class="bg-white p-4 rounded-lg shadow-lg card">
+                <div class="card">
                     <h5 class="card-title">Total Sales Done</h5>
-                    <h2 class="text-2xl text-center mt-4">${{ total_sales }}</h2>
-                    <p class="text-center">Average Order Value: ${{ average_sales }}</p>
+                    <h2 class="text-2xl text-center mt-4 text-white">${{ total_sales }}</h2>
+                    <p class="text-center text-gray-400">Average Order Value: ${{ average_sales }}</p>
                 </div>
 
                 <!-- Profit Margin -->
-                <div class="bg-white p-4 rounded-lg shadow-lg card">
+                <div class="card">
                     <h5 class="card-title">Profit Margin</h5>
                     <div class="chart-container mt-4">
                         <canvas id="profitMarginChart"></canvas>
@@ -71,7 +49,7 @@
                 </div>
 
                 <!-- Orders Summary -->
-                <div class="bg-white p-4 rounded-lg shadow-lg card">
+                <div class="card">
                     <h5 class="card-title">Orders Summary</h5>
                     <div class="chart-container mt-4">
                         <canvas id="ordersSummaryChart"></canvas>
@@ -79,7 +57,7 @@
                 </div>
 
                 <!-- Sales Value Chart -->
-                <div class="bg-white p-4 rounded-lg shadow-lg card">
+                <div class="card">
                     <h5 class="card-title">Sales Value</h5>
                     <div class="chart-container mt-4">
                         <canvas id="salesValueChart"></canvas>
@@ -87,7 +65,7 @@
                 </div>
 
                 <!-- Performance Chart -->
-                <div class="bg-white p-4 rounded-lg shadow-lg card">
+                <div class="card">
                     <h5 class="card-title">Performance</h5>
                     <div class="chart-container mt-4">
                         <canvas id="performanceChart"></canvas>
@@ -95,7 +73,7 @@
                 </div>
 
                 <!-- Sales by Region -->
-                <div class="bg-white p-4 rounded-lg shadow-lg card">
+                <div class="card">
                     <h5 class="card-title">Sales by Region</h5>
                     <div class="chart-container mt-4">
                         <canvas id="salesByRegionChart"></canvas>
@@ -103,7 +81,7 @@
                 </div>
 
                 <!-- Sales by Supplier -->
-                <div class="bg-white p-4 rounded-lg shadow-lg card">
+                <div class="card">
                     <h5 class="card-title">Sales by Supplier</h5>
                     <div class="chart-container mt-4">
                         <canvas id="salesBySupplierChart"></canvas>
@@ -111,13 +89,13 @@
                 </div>
 
                 <!-- Top Products -->
-                <div class="bg-white p-4 rounded-lg shadow-lg card">
+                <div class="card">
                     <h5 class="card-title">Top Products</h5>
                     <ul class="mt-4">
                         {% for product in top_products %}
-                        <li class="flex justify-between py-2 border-b">
-                            <span>{{ product[0] }} ({{ product[2] }} units)</span>
-                            <span class="text-gray-500">${{ product[1] }}</span>
+                        <li class="flex justify-between py-2 border-b border-gray-700">
+                            <span class="text-white">{{ product[0] }} ({{ product[2] }} units)</span>
+                            <span class="text-gray-400">${{ product[1] }}</span>
                         </li>
                         {% endfor %}
                     </ul>
@@ -125,139 +103,30 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const profitMarginData = {
-            labels: ['Total Spent', 'Amazon Commission', 'Profit Margin'],
-            datasets: [{
-                label: 'Profit Breakdown',
-                data: [
-                    {{ total_buy_price }},
-                    {{ total_amazon_commission }},
-                    {{ total_profit }}
-                ],
-                backgroundColor: ['#FF6384', '#36A2EB', '#4BC0C0'],
-                hoverBackgroundColor: ['#FF6384', '#36A2EB', '#4BC0C0']
-            }]
-        };
+        const totalBuyPrice = {{ total_buy_price }};
+        const totalAmazonCommission = {{ total_amazon_commission }};
+        const totalProfit = {{ total_profit }};
 
-        const ordersSummaryData = {
-            labels: ['Received', 'Returned', 'Pending', 'Shipped', 'Cancelled'],
-            datasets: [{
-                label: 'Orders',
-                data: [{{ received_orders }}, {{ returned_orders }}, {{ pending_orders }}, {{ shipped_orders }}, {{ cancelled_orders_count }}],
-                backgroundColor: ['#4BC0C0', '#FF6384', '#FFCE56', '#36A2EB', '#FF9F40'],
-                hoverBackgroundColor: ['#4BC0C0', '#FF6384', '#FFCE56', '#36A2EB', '#FF9F40']
-            }]
-        };
+        const receivedOrders = {{ received_orders }};
+        const returnedOrders = {{ returned_orders }};
+        const deliveredOrders = {{ delivered_orders }};  // Updated to "Delivered"
+        const shippedOrders = {{ shipped_orders }};
+        const cancelledOrdersCount = {{ cancelled_orders_count }};
 
-        const salesValueData = {
-            labels: [{% for date, value in sales_value %}'{{ date }}'{% if not loop.last %}, {% endif %}{% endfor %}],
-            datasets: [{
-                label: 'Sales Value',
-                data: [{% for date, value in sales_value %}{{ value }}{% if not loop.last %}, {% endif %}{% endfor %}],
-                borderColor: '#36A2EB',
-                fill: false
-            }]
-        };
+        const salesValueDates = [{% for date, value in sales_value %}'{{ date }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        const salesValueValues = [{% for date, value in sales_value %}{{ value }}{% if not loop.last %}, {% endif %}{% endfor %}];
 
-        const performanceData = {
-            labels: [{% for date, count in performance_orders %}'{{ date }}'{% if not loop.last %}, {% endif %}{% endfor %}],
-            datasets: [{
-                label: 'Total Orders',
-                data: [{% for date, count in performance_orders %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: '#FF6384',
-                hoverBackgroundColor: '#FF6384'
-            }]
-        };
+        const performanceDates = [{% for date, count in performance_orders %}'{{ date }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        const performanceCounts = [{% for date, count in performance_orders %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}];
 
-        const salesByRegionData = {
-            labels: [{% for region, value in sales_by_region %}'{{ region }}'{% if not loop.last %}, {% endif %}{% endfor %}],
-            datasets: [{
-                label: 'Sales by Region',
-                data: [{% for region, value in sales_by_region %}{{ value }}{% if not loop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: ['#4BC0C0', '#FF6384', '#FFCE56', '#36A2EB'],
-                hoverBackgroundColor: ['#4BC0C0', '#FF6384', '#FFCE56', '#36A2EB']
-            }]
-        };
+        const salesByRegionLabels = [{% for region, value in sales_by_region %}'{{ region }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        const salesByRegionValues = [{% for region, value in sales_by_region %}{{ value }}{% if not loop.last %}, {% endif %}{% endfor %}];
 
-        const salesBySupplierData = {
-            labels: [{% for supplier, count in sales_by_supplier %}'{{ supplier }}'{% if not loop.last %}, {% endif %}{% endfor %}],
-            datasets: [{
-                label: 'Number of Orders',
-                data: [{% for supplier, count in sales_by_supplier %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
-                hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
-            }]
-        };
-
-        new Chart(document.getElementById('profitMarginChart'), {
-            type: 'pie',
-            data: profitMarginData
-        });
-
-        new Chart(document.getElementById('ordersSummaryChart'), {
-            type: 'bar',
-            data: ordersSummaryData
-        });
-
-        new Chart(document.getElementById('salesValueChart'), {
-            type: 'line',
-            data: salesValueData
-        });
-
-        new Chart(document.getElementById('performanceChart'), {
-            type: 'bar',
-            data: performanceData
-        });
-
-        new Chart(document.getElementById('salesByRegionChart'), {
-            type: 'bar',
-            data: salesByRegionData
-        });
-
-        new Chart(document.getElementById('salesBySupplierChart'), {
-            type: 'bar',
-            data: salesBySupplierData
-        });
-
-        let currency = 'USD';
-        let exchangeRate;
-    
-        async function fetchExchangeRate() {
-            const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-            const data = await response.json();
-            exchangeRate = data.rates.INR;
-        }
-    
-        function formatCurrency(value, targetCurrency) {
-            value = parseFloat(value.replace(/[^\d.-]/g, '')); // Remove any existing currency symbols
-            if (targetCurrency === 'USD') {
-                return '$' + value.toFixed(2);
-            } else {
-                return '₹' + (value * exchangeRate).toFixed(2);
-            }
-        }
-    
-        async function toggleCurrency() {
-            if (!exchangeRate) await fetchExchangeRate();
-            const salePrices = document.querySelectorAll('.sale-price');
-            const buyPrices = document.querySelectorAll('.buy-price a');
-            const commissionValues = document.querySelectorAll('.commission-value');
-            
-            if (currency === 'USD') {
-                salePrices.forEach(price => price.innerHTML = formatCurrency(price.getAttribute('data-usd'), 'INR'));
-                buyPrices.forEach(price => price.innerHTML = formatCurrency(price.parentElement.getAttribute('data-usd'), 'INR'));
-                commissionValues.forEach(value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'INR'));
-                currency = 'INR';
-            } else {
-                salePrices.forEach(price => price.innerHTML = formatCurrency(price.getAttribute('data-usd'), 'USD'));
-                buyPrices.forEach(price => price.innerHTML = formatCurrency(price.parentElement.getAttribute('data-usd'), 'USD'));
-                commissionValues.forEach(value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'USD'));
-                currency = 'USD';
-            }
-        }
-        document.addEventListener('DOMContentLoaded', fetchExchangeRate);
+        const salesBySupplierLabels = [{% for supplier, count in sales_by_supplier %}'{{ supplier }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        const salesBySupplierCounts = [{% for supplier, count in sales_by_supplier %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}];
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/dashboard.js"></script>
 </body>
 </html>

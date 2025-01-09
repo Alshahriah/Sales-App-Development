@@ -1,0 +1,154 @@
+/* Body and Container Styling */
+/* Use the default Bootstrap font family */
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Apply Bootstrap's default font */
+    background: #000000; /* AMOLED black */
+    color: #e0e0e0;
+    overflow-x: hidden;
+    margin: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header Styling */
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #1a1a1a; /* Darker purple */
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.header-container h2 a {
+    color: #8a2be2; /* Vibrant purple */
+    text-decoration: none;
+}
+
+.header-container h2 a:hover {
+    text-decoration: underline;
+}
+
+/* Toggle Button Styling */
+.toggle-btn a, .toggle-btn button {
+    background: #8a2be2; /* Vibrant purple */
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.toggle-btn a:hover, .toggle-btn button:hover {
+    background: #5d3fd3; /* Slightly darker shade of the vibrant purple */
+}
+
+/* Card and Grid Layout */
+.card-title {
+    background-color: #1a1a1a; /* Darker purple */
+    color: white;
+    padding: 5px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.card {
+    background-color: #121212; /* Darker shade of black */
+    color: #e0e0e0;
+    margin: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.chart-container {
+    position: relative;
+    height: 250px; /* Adjusted height to fit more charts */
+    width: 100%;
+}
+
+/* Sidebar Styling */
+.w-64 {
+    width: 16rem;
+}
+
+.bg-blue-900 {
+    background-color: #1e3a8a;
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.block {
+    display: block;
+}
+
+.rounded {
+    border-radius: 0.375rem;
+}
+
+.hover\:bg-blue-800:hover {
+    background-color: #1c3879;
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.text-gray-400 {
+    color: #9ca3af;
+}
+
+.text-gray-500 {
+    color: #6b7280;
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.tracking-wide {
+    letter-spacing: 0.05em;
+}
+
+.border-b {
+    border-bottom-width: 1px;
+}
+
+.border-gray-700 {
+    border-color: #374151;
+}
+
+.bg-gray-900 {
+    background-color: #1a1a1a; /* Darker shade for dashboard background */
+}

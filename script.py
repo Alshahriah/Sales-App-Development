@@ -1,43 +1,47 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, Date, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
-from datetime import datetime
-
-DATABASE_URL = "sqlitecloud://cepdfj5nhk.sqlite.cloud:8860/sales-database-09-dev?apikey=pKH2wzPEGoQzkA5JlVg2vCS8msEsbtdJPwshboDfaYw"
-
-Base = declarative_base()
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Manually create deleted_sales table if it doesn't exist
-def create_deleted_sales_table():
-    conn = engine.connect()
-    if not engine.dialect.has_table(engine, "deleted_sales"):
-        conn.execute("""
-        CREATE TABLE deleted_sales (
-            id INTEGER PRIMARY KEY,
-            product_name TEXT,
-            product_description TEXT,
-            supplier_name TEXT,
-            order_datetime DATETIME,
-            sale_price FLOAT,
-            amazon_commission FLOAT,
-            quantity INTEGER,
-            buy_price FLOAT,
-            estimated_delivery DATE,
-            sale_date DATE,
-            buyer_name TEXT,
-            buyer_address TEXT,
-            delivery_status TEXT,
-            manage_link TEXT,
-            amazon_link TEXT,
-            payment_link TEXT,
-            region_id INTEGER,
-            forex_fees FLOAT
-        );
-        """)
-    conn.close()
-
-if __name__ == "__main__":
-    init_db()
-    create_deleted_sales_table()
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize variables using Jinja templating
+        const totalBuyPrice = {{ total_buy_price }};
+        const totalAmazonCommission = {{ total_amazon_commission }};
+        const totalProfit = {{ total_profit }};
+        
+        const receivedOrders = {{ received_orders }};
+        const returnedOrders = {{ returned_orders }};
+        const pendingOrders = {{ pending_orders }};
+        const shippedOrders = {{ shipped_orders }};
+        const cancelledOrdersCount = {{ cancelled_orders_count }};
+        
+        const salesValueDates = [{% for date, value in sales_value %}'{{ date }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        const salesValueValues = [{% for date, value in sales_value %}{{ value }}{% if not loop.last %}, {% endif %}{% endfor %}];
+        
+        const performanceDates = [{% for date, count in performance_orders %}'{{ date }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        const performanceCounts = [{% for date, count in performance_orders %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}];
+        
+        const salesByRegionLabels = [{% for region, value in sales_by_region %}'{{ region }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        const salesByRegionValues = [{% for region, value in sales_by_region %}{{ value }}{% if not loop.last %}, {% endif %}{% endfor %}];
+        
+        const salesBySupplierLabels = [{% for supplier, count in sales_by_supplier %}'{{ supplier }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+        const salesBySupplierCounts = [{% for supplier, count in sales_by_supplier %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}];
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Dashboard</h2>
+        <canvas id="profitMarginChart"></canvas>
+        <canvas id="ordersSummaryChart"></canvas>
+        <canvas id="salesValueChart"></canvas>
+        <canvas id="performanceChart"></canvas>
+        <canvas id="salesByRegionChart"></canvas>
+        <canvas id="salesBySupplierChart"></canvas>
+        <button class="toggle-btn" onclick="toggleCurrency()">Toggle Currency (USD/INR)</button>
+    </div>
+    <script src="/static/dashboard.js"></script> <!-- Include the new dashboard.js file -->
+</body>
+</html>

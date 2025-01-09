@@ -24,7 +24,7 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     # Order Summaries
     received_orders = db.query(Sale).filter(Sale.delivery_status == "Received").count()
     returned_orders = db.query(Sale).filter(Sale.delivery_status == "Returned").count()
-    pending_orders = db.query(Sale).filter(Sale.delivery_status == "Pending").count()
+    delivered_orders = db.query(Sale).filter(Sale.delivery_status == "Delivered").count()  # Change from "Pending" to "Delivered"
     shipped_orders = db.query(Sale).filter(Sale.delivery_status == "Shipped").count()
     cancelled_orders_count = db.query(Sale).filter(Sale.delivery_status == "Cancelled").count()
 
@@ -48,7 +48,7 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
         "total_amazon_commission": total_amazon_commission,
         "received_orders": received_orders,
         "returned_orders": returned_orders,
-        "pending_orders": pending_orders,
+        "delivered_orders": delivered_orders,  # Change from "Pending" to "Delivered"
         "shipped_orders": shipped_orders,
         "cancelled_orders_count": cancelled_orders_count,
         "sales_by_region": sales_by_region,
