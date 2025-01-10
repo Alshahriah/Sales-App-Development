@@ -9,40 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-
-    const rows = document.querySelectorAll('tbody tr');
-    rows.forEach(row => {
-        const statusSelect = row.querySelector('select.status-dropdown');
-        const status = statusSelect.value;
-        const parentCell = statusSelect.parentElement;
-        const indicator = parentCell.querySelector('.delivery-indicator');
-        indicator.classList.add(status.toLowerCase());
-
-        // Add event listener for change
-        statusSelect.addEventListener('change', async function() {
-            const newStatus = this.value;
-            const saleId = statusSelect.getAttribute('data-sale-id');
-            indicator.className = `delivery-indicator ${newStatus.toLowerCase()}`;
-            const statusText = parentCell.querySelector('.delivery-status-text');
-            statusText.textContent = newStatus;
-
-            const response = await fetch(`/update_status/${saleId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ delivery_status: newStatus })
-            });
-
-            if (response.ok) {
-                alert('Status updated successfully'); // Single alert for success
-            } else {
-                const errorData = await response.json();
-                console.error('Error updating status:', errorData);
-                alert('Failed to update status');
-            }
-        });
-    });
 });
 
 let currency = 'USD';
@@ -77,7 +43,7 @@ async function toggleCurrency() {
     } else {
         salePrices.forEach(price => price.innerHTML = formatCurrency(price.getAttribute('data-usd'), 'USD'));
         buyPrices.forEach(price => price.innerHTML = formatCurrency(price.parentElement.getAttribute('data-usd'), 'USD'));
-        commissionValues.forEach(value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'USD'));
+        commissionValues.forEach value => value.innerHTML = formatCurrency(value.getAttribute('data-usd'), 'USD'));
         currency = 'USD';
     }
 }

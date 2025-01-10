@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders by Region</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/orders_by_region.css"> <!-- External CSS -->
 </head>
 <body class="bg-gray-900 font-roboto">
@@ -65,14 +66,17 @@
                             <td class="border px-4 py-2">
                                 <span class="delivery-indicator {{ sale.delivery_status | lower }}" data-sale-id="{{ sale.id }}"></span>
                                 <span class="delivery-status-text" data-sale-id="{{ sale.id }}">{{ sale.delivery_status }}</span>
-                                <select class="form-control status-dropdown bg-transparent" data-sale-id="{{ sale.id }}" onchange="updateDeliveryStatus({{ sale.id }}, this.value)">
-                                    <option class="bg-white text-black" value="Received" {% if sale.delivery_status == "Received" %}selected{% endif %}>Received</option>
-                                    <option class="bg-white text-black" value="Shipped" {% if sale.delivery_status == "Shipped" %}selected{% endif %}>Shipped</option>
-                                    <option class="bg-white text-black" value="Delivered" {% if sale.delivery_status == "Delivered" %}selected{% endif %}>Delivered</option>
-                                    <option class="bg-white text-black" value="Cancelled" {% if sale.delivery_status == "Cancelled" %}selected{% endif %}>Cancelled</option>
-                                    <option class="bg-white text-black" value="Returned" {% if sale.delivery_status == "Returned" %}selected{% endif %}>Returned</option>
-                                </select>
-                            </td>
+                                <form method="post" action="/update_status/{{ sale.id }}">
+                                    <input type="hidden" name="redirect_url" value="{{ request.url.path }}?{{ request.query_string.decode('utf-8') }}">
+                                    <select name="delivery_status" class="form-control status-dropdown bg-transparent" onchange="this.form.submit()">
+                                        <option class="bg-white text-black" value="Received" {% if sale.delivery_status == "Received" %}selected{% endif %}>Received</option>
+                                        <option class="bg-white text-black" value="Shipped" {% if sale.delivery_status == "Shipped" %}selected{% endif %}>Shipped</option>
+                                        <option class="bg-white text-black" value="Delivered" {% if sale.delivery_status == "Delivered" %}selected{% endif %}>Delivered</option>
+                                        <option class="bg-white text-black" value="Cancelled" {% if sale.delivery_status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                                        <option class="bg-white text-black" value="Returned" {% if sale.delivery_status == "Returned" %}selected{% endif %}>Returned</option>
+                                    </select>
+                                </form>
+                            </td>                            
                             <td class="border px-4 py-2">{{ sale.buyer_name }}</td>
                             <td class="border px-4 py-2">{{ sale.buyer_address }}</td>
                             <td class="border px-2 py-1 flex flex-col space-y-1">

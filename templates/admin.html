@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISM Admin - All Orders</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
@@ -59,14 +60,17 @@
                         <td class="border px-4 py-2">
                             <span class="delivery-indicator {{ sale.delivery_status | lower }}"></span>
                             <span class="delivery-status-text">{{ sale.delivery_status }}</span>
-                            <select class="form-control status-dropdown bg-transparent" data-sale-id="{{ sale.id }}" onchange="updateDeliveryStatus({{ sale.id }}, this.value)">
-                                <option class="bg-white text-black" value="Received" {% if sale.delivery_status == "Received" %}selected{% endif %}>Received</option>
-                                <option class="bg-white text-black" value="Shipped" {% if sale.delivery_status == "Shipped" %}selected{% endif %}>Shipped</option>
-                                <option class="bg-white text-black" value="Delivered" {% if sale.delivery_status == "Delivered" %}selected{% endif %}>Delivered</option>
-                                <option class="bg-white text-black" value="Cancelled" {% if sale.delivery_status == "Cancelled" %}selected{% endif %}>Cancelled</option>
-                                <option class="bg-white text-black" value="Returned" {% if sale.delivery_status == "Returned" %}selected{% endif %}>Returned</option>
-                            </select>
-                        </td>
+                            <form method="post" action="/update_status/{{ sale.id }}">
+                                <input type="hidden" name="redirect_url" value="{{ request.url.path }}?{{ request.query_string.decode('utf-8') }}">
+                                <select name="delivery_status" class="form-control status-dropdown bg-transparent" onchange="this.form.submit()">
+                                    <option class="bg-white text-black" value="Received" {% if sale.delivery_status == "Received" %}selected{% endif %}>Received</option>
+                                    <option class="bg-white text-black" value="Shipped" {% if sale.delivery_status == "Shipped" %}selected{% endif %}>Shipped</option>
+                                    <option class="bg-white text-black" value="Delivered" {% if sale.delivery_status == "Delivered" %}selected{% endif %}>Delivered</option>
+                                    <option class="bg-white text-black" value="Cancelled" {% if sale.delivery_status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                                    <option class="bg-white text-black" value="Returned" {% if sale.delivery_status == "Returned" %}selected{% endif %}>Returned</option>
+                                </select>
+                            </form>
+                        </td>                        
                         <td class="border px-2 py-1">{{ sale.buyer_name }}</td>
                         <td class="border px-2 py-1">{{ sale.buyer_address }}</td>
                         <td class="border px-4 py-2">{{ sale.region.region_name }}</td>

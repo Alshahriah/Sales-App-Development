@@ -195,14 +195,14 @@ async def order_details(id: int, request: Request, db: Session = Depends(get_db)
         raise HTTPException(status_code=404, detail="Sale not found")
     return templates.TemplateResponse("order_details.html", {"request": request, "sale": sale})
 
-@router.post("/update_status/{sale_id}", response_class=JSONResponse)
-async def update_status(sale_id: int, request: UpdateStatusRequest, db: Session = Depends(get_db)):
+@router.post("/update_status/{sale_id}", response_class=RedirectResponse)
+async def update_status(request: Request, sale_id: int, delivery_status: str = Form(...), redirect_url: str = Form(...), db: Session = Depends(get_db)):
     user = request.cookies.get("username")
     sale = db.query(Sale).filter(Sale.id == sale_id).first()
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")
 
-    sale.delivery_status = request.delivery_status
+    sale.delivery_status = delivery_status
     db.commit()
     log_crud_action(
         action="UPDATE",
@@ -210,6 +210,6 @@ async def update_status(sale_id: int, request: UpdateStatusRequest, db: Session 
         record_id=sale.id,
         db=db,
         user=user,
-        details=f"Updated delivery status for sale <a href='/orderdetails/{sale.id}'>{sale.buyer_name}</a> to '{request.delivery_status}'"
+        details=f"Updated delivery status for sale <a href='/orderdetails/{sale.id}'>{sale.buyer_name}</a> to '{delivery_status}'"
     )
-    return JSONResponse(content={"message": "Status updated successfully"})
+    return RedirectResponse(url=redirect_url, status_code=303)
