@@ -45,6 +45,7 @@ async def create_sale(
     region_id: int = Form(...),  # Existing field for region
     db: Session = Depends(get_db)
 ):
+    user = request.cookies.get("username")
     new_sale = Sale(
         product_name=product_name,
         product_description=product_description,
@@ -73,6 +74,7 @@ async def create_sale(
         model="Sale",
         record_id=new_sale.id,
         db=db,
+        user=user,
         details=f"Created sale for product '{product_name}' from order <a href='/orderdetails/{new_sale.id}'>{buyer_name}</a>"
     )
     return RedirectResponse("/", status_code=303)
@@ -108,6 +110,7 @@ async def edit_sale(
     region_id: int = Form(...),  # Existing field for region
     referrer: str = Form(None)
 ):
+    user = request.cookies.get("username")
     sale = db.query(Sale).filter(Sale.id == sale_id).first()
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")
@@ -135,12 +138,14 @@ async def edit_sale(
         model="Sale",
         record_id=sale.id,
         db=db,
+        user=user,
         details=f"Updated sale <a href='/orderdetails/{sale.id}'>{buyer_name}</a> for product '{product_name}'"
     )
     return RedirectResponse(referrer or "/admin", status_code=303)
 
 @router.post("/delete/{sale_id}", response_class=HTMLResponse)
 async def delete_sale(sale_id: int, request: Request, db: Session = Depends(get_db)):
+    user = request.cookies.get("username")
     sale = db.query(Sale).filter(Sale.id == sale_id).first()
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")
@@ -178,10 +183,10 @@ async def delete_sale(sale_id: int, request: Request, db: Session = Depends(get_
         model="Sale",
         record_id=sale.id,
         db=db,
+        user=user,
         details=f"Deleted sale <a href='/orderdetails/{sale.id}'>{sale.buyer_name}</a> for product '{sale.product_name}'"
     )
     return RedirectResponse("/admin", status_code=303)
-
 
 @router.get("/orderdetails/{id}", response_class=HTMLResponse)
 async def order_details(id: int, request: Request, db: Session = Depends(get_db)):
@@ -192,6 +197,7 @@ async def order_details(id: int, request: Request, db: Session = Depends(get_db)
 
 @router.post("/update_status/{sale_id}", response_class=JSONResponse)
 async def update_status(sale_id: int, request: UpdateStatusRequest, db: Session = Depends(get_db)):
+    user = request.cookies.get("username")
     sale = db.query(Sale).filter(Sale.id == sale_id).first()
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")
@@ -203,6 +209,7 @@ async def update_status(sale_id: int, request: UpdateStatusRequest, db: Session 
         model="Sale",
         record_id=sale.id,
         db=db,
+        user=user,
         details=f"Updated delivery status for sale <a href='/orderdetails/{sale.id}'>{sale.buyer_name}</a> to '{request.delivery_status}'"
     )
     return JSONResponse(content={"message": "Status updated successfully"})
