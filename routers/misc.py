@@ -14,3 +14,7 @@ def list_endpoints(request: Request):
         for route in request.app.routes
     ]
     return url_list
+
+@router.get("/time", response_class=HTMLResponse)
+async def view_times(request: Request):
+    return templates.TemplateResponse("time.html", {"request": request})

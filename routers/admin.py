@@ -91,36 +91,45 @@ async def view_orders(
     # if request.cookies.get("authenticated") != "true":
     #     return RedirectResponse("/login")
 
-    now = datetime.now()
-    
-    if period == "days":
-        filter_date = now - timedelta(days=value)
-    elif period == "months":
-        filter_date = now - timedelta(days=value * 30)
-    elif period == "years":
-        filter_date = now - timedelta(days=value * 365)
-    else:
-        filter_date = now - timedelta(days=365)
+    query = db.query(Sale)
 
-    query = db.query(Sale).filter(Sale.sale_date >= filter_date)
-    
+    # Apply date filters
+    now = datetime.now().date()
+    if period and value:
+        if period == "days":
+            filter_date = now - timedelta(days=value)
+        elif period == "months":
+            filter_date = now - timedelta(days=value * 30)
+        elif period == "years":
+            filter_date = now - timedelta(days=value * 365)
+        else:
+            filter_date = now - timedelta(days=365)
+        query = query.filter(func.date(Sale.sale_date) >= filter_date)
+
     if delivery_status:
         query = query.filter(Sale.delivery_status == delivery_status)
 
-    if ship_by:
-        query = query.filter(Sale.estimated_delivery <= ship_by)
+    try:
+        if ship_by:
+            ship_by_date = datetime.strptime(ship_by, '%Y-%m-%d').date()
+            query = query.filter(func.date(Sale.estimated_delivery) <= ship_by_date)
 
-    if delivery_by:
-        query = query.filter(Sale.estimated_delivery <= delivery_by)
+        if delivery_by:
+            delivery_by_date = datetime.strptime(delivery_by, '%Y-%m-%d').date()
+            query = query.filter(func.date(Sale.estimated_delivery) <= delivery_by_date)
 
-    if sale_date_start:
-        query = query.filter(Sale.sale_date >= sale_date_start)
+        if sale_date_start:
+            query = query.filter(func.date(Sale.sale_date) >= sale_date_start)
 
-    if sale_date_end:
-        query = query.filter(Sale.sale_date <= sale_date_end)
+        if sale_date_end:
+            query = query.filter(func.date(Sale.sale_date) <= sale_date_end)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
 
     if search:
-        query = query.filter(Sale.product_name.ilike(f"%{search}%") | Sale.buyer_name.ilike(f"%{search}%"))
+        search = search.strip()
+        if search:
+            query = query.filter(Sale.product_name.ilike(f"%{search}%") | Sale.buyer_name.ilike(f"%{search}%"))
 
     total_orders = query.count()
     sales = query.order_by(desc(Sale.sale_date)).offset((page - 1) * page_size).limit(page_size).all()
