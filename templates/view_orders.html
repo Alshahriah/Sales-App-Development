@@ -93,10 +93,10 @@
                             <tr>
                                 <td>{{ sale.product_name }}</td>
                                 <td>{{ sale.supplier_name }}</td>
-                                <td>${{ sale.sale_price }}</td>
-                                <td>${{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}</td>
+                                <td class="sale-price" data-usd="{{ sale.sale_price }}">${{ sale.sale_price }}</td>
+                                <td class="commission-value" data-usd="{{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}">${{ (sale.sale_price * sale.amazon_commission / 100) | round(2) }}</td>
                                 <td>{{ sale.quantity }}</td>
-                                <td>
+                                <td class="buy-price" data-usd="{{ sale.buy_price }}">
                                     <a href="{{ sale.payment_link }}" target="_blank" class="light-purple">${{ sale.buy_price }}</a>
                                 </td>
                                 <td>{{ sale.estimated_delivery }}</td>
@@ -148,6 +148,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/static/js/currency-util.js"></script>
     <script src="/static/js/view_orders.js"></script>
 </body>
 </html>

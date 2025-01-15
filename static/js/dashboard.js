@@ -98,48 +98,5 @@ document.addEventListener('DOMContentLoaded', function() {
         type: 'bar',
         data: salesBySupplierData
     });
-
-    let currency = 'USD';
-    let exchangeRate;
     
-    async function fetchExchangeRate() {
-        const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-        const data = await response.json();
-        exchangeRate = data.rates.INR;
-    }
-    
-    function formatCurrency(value, targetCurrency) {
-        value = parseFloat(value.replace(/[^\d.-]/g, '')); // Remove any existing currency symbols
-        if (targetCurrency === 'USD') {
-            return '$' + value.toFixed(2);
-        } else {
-            return '₹' + (value * exchangeRate).toFixed(2);
-        }
-    }
-    
-    async function toggleCurrency() {
-        if (!exchangeRate) await fetchExchangeRate();
-        const totalSalesElement = document.querySelector('#total-sales');
-        const averageSalesElement = document.querySelector('#average-sales-value');
-        const topProductsList = document.querySelectorAll('#top-products-list span[data-usd]');
-
-        if (currency === 'USD') {
-            totalSalesElement.innerHTML = '₹' + (parseFloat(totalSalesElement.getAttribute('data-usd')) * exchangeRate).toFixed(2);
-            averageSalesElement.innerHTML = '₹' + (parseFloat(averageSalesElement.getAttribute('data-usd')) * exchangeRate).toFixed(2);
-            topProductsList.forEach(product => {
-                product.innerHTML = '₹' + (parseFloat(product.getAttribute('data-usd')) * exchangeRate).toFixed(2);
-            });
-            currency = 'INR';
-        } else {
-            totalSalesElement.innerHTML = '$' + parseFloat(totalSalesElement.getAttribute('data-usd')).toFixed(2);
-            averageSalesElement.innerHTML = '$' + parseFloat(averageSalesElement.getAttribute('data-usd')).toFixed(2);
-            topProductsList.forEach(product => {
-                product.innerHTML = '$' + parseFloat(product.getAttribute('data-usd')).toFixed(2);
-            });
-            currency = 'USD';
-        }
-    }
-
-    fetchExchangeRate();
-    window.toggleCurrency = toggleCurrency; // Ensure the function is accessible globally
 });

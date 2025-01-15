@@ -132,6 +132,7 @@
         const salesBySupplierCounts = [{% for supplier, count in sales_by_supplier %}{{ count }}{% if not loop.last %}, {% endif %}{% endfor %}];
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/currency-util.js"></script>
     <script src="/static/js/dashboard.js"></script>
 </body>
 </html>
