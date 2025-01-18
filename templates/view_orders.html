@@ -74,15 +74,69 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Product Name</th>
-                                <th>Supplier</th>
-                                <th>Sale Price</th>
+                                <th>
+                                    <a href="?sort_by=product_name&sort_order={% if sort_by == 'product_name' and sort_order == 'desc' %}asc{% else %}desc{% endif %}" class="sort-header">
+                                        Product Name
+                                        {% if sort_by == 'product_name' %}
+                                            <i class="fas fa-sort-{% if sort_order == 'desc' %}down{% else %}up{% endif %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-sort"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="?sort_by=supplier_name&sort_order={% if sort_by == 'supplier_name' and sort_order == 'desc' %}asc{% else %}desc{% endif %}" class="sort-header">
+                                        Supplier
+                                        {% if sort_by == 'supplier_name' %}
+                                            <i class="fas fa-sort-{% if sort_order == 'desc' %}down{% else %}up{% endif %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-sort"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="?sort_by=sale_price&sort_order={% if sort_by == 'sale_price' and sort_order == 'desc' %}asc{% else %}desc{% endif %}" class="sort-header">
+                                        Sale Price
+                                        {% if sort_by == 'sale_price' %}
+                                            <i class="fas fa-sort-{% if sort_order == 'desc' %}down{% else %}up{% endif %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-sort"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
                                 <th>Amazon Commission</th>
                                 <th>Quantity</th>
                                 <th>Buy Price</th>
-                                <th>Estimated Delivery</th>
-                                <th>Sale Date</th>
-                                <th>Delivery Status</th>
+                                <th>
+                                    <a href="?sort_by=estimated_delivery&sort_order={% if sort_by == 'estimated_delivery' and sort_order == 'desc' %}asc{% else %}desc{% endif %}" class="sort-header">
+                                        Estimated Delivery
+                                        {% if sort_by == 'estimated_delivery' %}
+                                            <i class="fas fa-sort-{% if sort_order == 'desc' %}down{% else %}up{% endif %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-sort"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="?sort_by=sale_date&sort_order={% if sort_by == 'sale_date' and sort_order == 'desc' %}asc{% else %}desc{% endif %}" class="sort-header">
+                                        Sale Date
+                                        {% if sort_by == 'sale_date' %}
+                                            <i class="fas fa-sort-{% if sort_order == 'desc' %}down{% else %}up{% endif %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-sort"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="?sort_by=delivery_status&sort_order={% if sort_by == 'delivery_status' and sort_order == 'desc' %}asc{% else %}desc{% endif %}" class="sort-header">
+                                        Delivery Status
+                                        {% if sort_by == 'delivery_status' %}
+                                            <i class="fas fa-sort-{% if sort_order == 'desc' %}down{% else %}up{% endif %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-sort"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
                                 <th>Buyer Name</th>
                                 <th>Buyer Address</th>
                                 <th>Actions</th>
@@ -119,28 +173,6 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <!-- Pagination -->
-                    <nav aria-label="Page navigation" class="pagination">
-                        <ul class="pagination">
-                            {% if page > 1 %}
-                            <li class="page-item">
-                                <a class="page-link bg-blue-500 text-white py-2 px-4 rounded-full" href="?page={{ page-1 }}&per_page={{ page_size }}">Previous</a>
-                            </li>
-                            {% endif %}
-                            
-                            {% for p in range(1, (total_orders // page_size) + 2) %}
-                            <li class="page-item {% if page == p %}active{% endif %}">
-                                <a class="page-link bg-blue-500 text-white py-2 px-4 rounded-full {% if page == p %}bg-blue-700{% endif %}" href="?page={{ p }}&per_page={{ page_size }}">{{ p }}</a>
-                            </li>
-                            {% endfor %}
-                            
-                            {% if page < total_orders // page_size + 1 %}
-                            <li class="page-item">
-                                <a class="page-link bg-blue-500 text-white py-2 px-4 rounded-full" href="?page={{ page+1 }}&per_page={{ page_size }}">Next</a>
-                            </li>
-                            {% endif %}
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </div>

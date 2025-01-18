@@ -4,7 +4,8 @@ from database import Base
 class DeletedSale(Base):
     __tablename__ = "deleted_sales"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    original_sale_id = Column(Integer)
     product_name = Column(String, index=True)
     product_description = Column(String, nullable=True)
     supplier_name = Column(String, index=True)

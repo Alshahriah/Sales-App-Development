@@ -150,9 +150,9 @@ async def delete_sale(sale_id: int, request: Request, db: Session = Depends(get_
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")
 
-    # Create a DeletedSale record
+    # Create a DeletedSale record without specifying the id
     deleted_sale = DeletedSale(
-        id=sale.id,
+        original_sale_id=sale.id,  # Store the original sale ID
         product_name=sale.product_name,
         product_description=sale.product_description,
         supplier_name=sale.supplier_name,

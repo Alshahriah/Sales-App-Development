@@ -255,3 +255,22 @@ label {
     background-color: #5d3fd3; /* Slightly darker shade */
     transform: scale(1.05); /* Slightly enlarge on hover */
 }
+
+.sort-header {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sort-header:hover {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.fas.fa-sort,
+.fas.fa-sort-up,
+.fas.fa-sort-down {
+    margin-left: 5px;
+}

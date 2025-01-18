@@ -84,9 +84,9 @@ async def view_orders(
     delivery_by: Optional[str] = Query(None, description="Delivery by date filter"),
     sale_date_start: Optional[date] = Query(None, description="Start date for sale date filter"),
     sale_date_end: Optional[date] = Query(None, description="End date for sale date filter"),
-    page: int = Query(1, description="Page number"),
-    page_size: int = Query(10, description="Number of orders per page"),
-    search: Optional[str] = Query(None, description="Search term")
+    search: Optional[str] = Query(None, description="Search term"),
+    sort_by: Optional[str] = Query(None, description="Sort field"),
+    sort_order: Optional[str] = Query("desc", description="Sort order (asc or desc)")
 ):
     # if request.cookies.get("authenticated") != "true":
     #     return RedirectResponse("/login")
@@ -131,8 +131,19 @@ async def view_orders(
         if search:
             query = query.filter(Sale.product_name.ilike(f"%{search}%") | Sale.buyer_name.ilike(f"%{search}%"))
 
-    total_orders = query.count()
-    sales = query.order_by(desc(Sale.sale_date)).offset((page - 1) * page_size).limit(page_size).all()
+    # Add sorting logic
+    if sort_by:
+        sort_column = getattr(Sale, sort_by, None)
+        if sort_column is not None:
+            if sort_order.lower() == "desc":
+                query = query.order_by(desc(sort_column))
+            else:
+                query = query.order_by(sort_column)
+    else:
+        # Default sort by sale_date descending
+        query = query.order_by(desc(Sale.sale_date))
+
+    sales = query.all()  # Get all sales without pagination
 
     return templates.TemplateResponse("view_orders.html", {
         "request": request,
@@ -144,10 +155,9 @@ async def view_orders(
         "delivery_by": delivery_by,
         "sale_date_start": sale_date_start,
         "sale_date_end": sale_date_end,
-        "page": page,
-        "page_size": page_size,
-        "total_orders": total_orders,
-        "search": search
+        "search": search,
+        "sort_by": sort_by,
+        "sort_order": sort_order
     })
 
 
