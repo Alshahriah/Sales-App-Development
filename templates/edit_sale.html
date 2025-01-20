@@ -63,8 +63,16 @@
                     <input type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="buy_price" name="buy_price" value="{{ sale.buy_price }}" required>
                 </div>
                 <div class="form-group mb-4">
+                    <label for="ship_date" class="block font-bold mb-2" style="color: #000000;">Ship Date</label>
+                    <input type="date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="ship_date" name="ship_date" value="{{ sale.ship_date }}" required>
+                </div>
+                <div class="form-group mb-4">
                     <label for="estimated_delivery" class="block font-bold mb-2" style="color: #000000;">Estimated Delivery</label>
-                    <input type="date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="estimated_delivery" name="estimated_delivery" value="{{ sale.estimated_delivery }}" required>
+                    <input type="date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="estimated_delivery" name="estimated_delivery" value="{{ sale.estimated_delivery }}">
+                </div>
+                <div class="form-group mb-4">
+                    <label for="estimated_payout_date" class="block font-bold mb-2" style="color: #000000;">Estimated Payout Date</label>
+                    <input type="date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="estimated_payout_date" name="estimated_payout_date" value="{{ sale.estimated_payout_date }}">
                 </div>
                 <div class="form-group mb-4">
                     <label for="sale_date" class="block font-bold mb-2" style="color: #000000;">Sale Date</label>

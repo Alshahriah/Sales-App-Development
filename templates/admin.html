@@ -34,8 +34,10 @@
                         <th>Forex Fees</th>
                         <th>Quantity</th>
                         <th>Buy Price</th>
+                        <th>Ship Date</th>
                         <th>Estimated Delivery</th>
-                        <th>Sale Date</th> <!-- Ensuring this column is correctly placed -->
+                        <th>Estimated Payout</th>
+                        <th>Sale Date</th>
                         <th>Delivery Status</th>
                         <th>Buyer Name</th>
                         <th>Buyer Address</th>
@@ -56,8 +58,10 @@
                         <td class="border px-4 py-2 buy-price" data-usd="{{ sale.buy_price * (1 + 0.0118 * (sale.forex_fees or 0)) }}">
                             <a href="{{ sale.payment_link }}" target="_blank" class="light-purple">${{ (sale.buy_price * (1 + 0.0118 * (sale.forex_fees or 0))) | round(2)}}</a>
                         </td>
+                        <td class="border px-4 py-2">{{ sale.ship_date }}</td>
                         <td class="border px-4 py-2">{{ sale.estimated_delivery }}</td>
-                        <td class="border px-4 py-2">{{ sale.sale_date }}</td> <!-- Adding sale date column correctly -->
+                        <td class="border px-4 py-2">{{ sale.estimated_payout_date }}</td>
+                        <td class="border px-4 py-2">{{ sale.sale_date }}</td>
                         <td class="border px-4 py-2">
                             <span class="delivery-indicator {{ sale.delivery_status | lower }}"></span>
                             <span class="delivery-status-text">{{ sale.delivery_status }}</span>

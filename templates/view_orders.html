@@ -108,9 +108,29 @@
                                 <th>Quantity</th>
                                 <th>Buy Price</th>
                                 <th>
+                                    <a href="?sort_by=ship_date&sort_order={% if sort_by == 'ship_date' and sort_order == 'desc' %}asc{% else %}desc{% endif %}" class="sort-header">
+                                        Ship Date
+                                        {% if sort_by == 'ship_date' %}
+                                            <i class="fas fa-sort-{% if sort_order == 'desc' %}down{% else %}up{% endif %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-sort"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th>
                                     <a href="?sort_by=estimated_delivery&sort_order={% if sort_by == 'estimated_delivery' and sort_order == 'desc' %}asc{% else %}desc{% endif %}" class="sort-header">
                                         Estimated Delivery
                                         {% if sort_by == 'estimated_delivery' %}
+                                            <i class="fas fa-sort-{% if sort_order == 'desc' %}down{% else %}up{% endif %}"></i>
+                                        {% else %}
+                                            <i class="fas fa-sort"></i>
+                                        {% endif %}
+                                    </a>
+                                </th>
+                                <th>
+                                    <a href="?sort_by=estimated_payout_date&sort_order={% if sort_by == 'estimated_payout_date' and sort_order == 'desc' %}asc{% else %}desc{% endif %}" class="sort-header">
+                                        Estimated Payout
+                                        {% if sort_by == 'estimated_payout_date' %}
                                             <i class="fas fa-sort-{% if sort_order == 'desc' %}down{% else %}up{% endif %}"></i>
                                         {% else %}
                                             <i class="fas fa-sort"></i>
@@ -153,7 +173,9 @@
                                 <td class="buy-price" data-usd="{{ sale.buy_price }}">
                                     <a href="{{ sale.payment_link }}" target="_blank" class="light-purple">${{ sale.buy_price }}</a>
                                 </td>
+                                <td>{{ sale.ship_date }}</td>
                                 <td>{{ sale.estimated_delivery }}</td>
+                                <td>{{ sale.estimated_payout_date }}</td>
                                 <td>{{ sale.sale_date }}</td>
                                 <td>{{ sale.delivery_status }}</td>
                                 <td>{{ sale.buyer_name }}</td>
