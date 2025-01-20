@@ -80,8 +80,10 @@ async def view_orders(
     period: Optional[str] = Query(None, description="Filter period: 'days', 'months', 'years'"),
     value: int = Query(1, description="Value for the period filter"),
     delivery_status: Optional[str] = Query(None, description="Delivery status filter"),
-    ship_by: Optional[str] = Query(None, description="Ship by date filter"),
-    delivery_by: Optional[str] = Query(None, description="Delivery by date filter"),
+    ship_date_start: Optional[str] = Query(None, description="Start date for ship date filter"),
+    ship_date_end: Optional[str] = Query(None, description="End date for ship date filter"),
+    payout_date_start: Optional[str] = Query(None, description="Start date for payout date filter"),
+    payout_date_end: Optional[str] = Query(None, description="End date for payout date filter"),
     sale_date_start: Optional[date] = Query(None, description="Start date for sale date filter"),
     sale_date_end: Optional[date] = Query(None, description="End date for sale date filter"),
     search: Optional[str] = Query(None, description="Search term"),
@@ -110,13 +112,21 @@ async def view_orders(
         query = query.filter(Sale.delivery_status == delivery_status)
 
     try:
-        if ship_by:
-            ship_by_date = datetime.strptime(ship_by, '%Y-%m-%d').date()
-            query = query.filter(func.date(Sale.estimated_delivery) <= ship_by_date)
+        if ship_date_start:
+            ship_date_start_date = datetime.strptime(ship_date_start, '%Y-%m-%d').date()
+            query = query.filter(func.date(Sale.ship_date) >= ship_date_start_date)
 
-        if delivery_by:
-            delivery_by_date = datetime.strptime(delivery_by, '%Y-%m-%d').date()
-            query = query.filter(func.date(Sale.estimated_delivery) <= delivery_by_date)
+        if ship_date_end:
+            ship_date_end_date = datetime.strptime(ship_date_end, '%Y-%m-%d').date()
+            query = query.filter(func.date(Sale.ship_date) <= ship_date_end_date)
+
+        if payout_date_start:
+            payout_date_start_date = datetime.strptime(payout_date_start, '%Y-%m-%d').date()
+            query = query.filter(func.date(Sale.estimated_payout_date) >= payout_date_start_date)
+
+        if payout_date_end:
+            payout_date_end_date = datetime.strptime(payout_date_end, '%Y-%m-%d').date()
+            query = query.filter(func.date(Sale.estimated_payout_date) <= payout_date_end_date)
 
         if sale_date_start:
             query = query.filter(func.date(Sale.sale_date) >= sale_date_start)
@@ -151,8 +161,10 @@ async def view_orders(
         "period": period,
         "value": value,
         "delivery_status": delivery_status,
-        "ship_by": ship_by,
-        "delivery_by": delivery_by,
+        "ship_date_start": ship_date_start,
+        "ship_date_end": ship_date_end,
+        "payout_date_start": payout_date_start,
+        "payout_date_end": payout_date_end,
         "sale_date_start": sale_date_start,
         "sale_date_end": sale_date_end,
         "search": search,
@@ -188,7 +200,9 @@ async def delete_sale(sale_id: int, db: Session = Depends(get_db)):
             amazon_commission=sale.amazon_commission,
             quantity=sale.quantity,
             buy_price=sale.buy_price,
+            ship_date=sale.ship_date,
             estimated_delivery=sale.estimated_delivery,
+            estimated_payout_date=sale.estimated_payout_date,
             sale_date=sale.sale_date,
             buyer_name=sale.buyer_name,
             buyer_address=sale.buyer_address,
@@ -218,7 +232,9 @@ async def restore_sale(sale_id: int, db: Session = Depends(get_db)):
             amazon_commission=deleted_sale.amazon_commission,
             quantity=deleted_sale.quantity,
             buy_price=deleted_sale.buy_price,
+            ship_date=deleted_sale.ship_date,
             estimated_delivery=deleted_sale.estimated_delivery,
+            estimated_payout_date=deleted_sale.estimated_payout_date,
             sale_date=deleted_sale.sale_date,
             buyer_name=deleted_sale.buyer_name,
             buyer_address=deleted_sale.buyer_address,
@@ -248,7 +264,9 @@ async def delete_sale(sale_id: int, db: Session = Depends(get_db)):
             amazon_commission=sale.amazon_commission,
             quantity=sale.quantity,
             buy_price=sale.buy_price,
+            ship_date=sale.ship_date,
             estimated_delivery=sale.estimated_delivery,
+            estimated_payout_date=sale.estimated_payout_date,
             sale_date=sale.sale_date,
             buyer_name=sale.buyer_name,
             buyer_address=sale.buyer_address,
@@ -278,7 +296,9 @@ async def restore_sale(sale_id: int, db: Session = Depends(get_db)):
             amazon_commission=deleted_sale.amazon_commission,
             quantity=deleted_sale.quantity,
             buy_price=deleted_sale.buy_price,
+            ship_date=deleted_sale.ship_date,
             estimated_delivery=deleted_sale.estimated_delivery,
+            estimated_payout_date=deleted_sale.estimated_payout_date,
             sale_date=deleted_sale.sale_date,
             buyer_name=deleted_sale.buyer_name,
             buyer_address=deleted_sale.buyer_address,
