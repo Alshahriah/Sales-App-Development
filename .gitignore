@@ -3,4 +3,5 @@ others/*
 myapp/*
 ./script.py
 .env
-scripts/*
+!.env.example
+*.pyc

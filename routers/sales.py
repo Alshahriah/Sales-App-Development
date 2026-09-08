@@ -17,6 +17,11 @@ def log_crud_action(action: str, model: str, record_id: int, db: Session, user: 
     db.add(log_entry)
     db.commit()
 
+
+def _current_user(request: Request) -> str | None:
+    # Session is authoritative; legacy signed-cookie fallback for transition.
+    return request.session.get("username") or request.cookies.get("username")
+
 @router.get("/create_sale", response_class=HTMLResponse)
 async def create_sale_form(request: Request, db: Session = Depends(get_db)):
     regions = db.query(Region).all()  # Fetch all regions from the database
@@ -47,7 +52,7 @@ async def create_sale(
     region_id: int = Form(...),  # Existing field for region
     db: Session = Depends(get_db)
 ):
-    user = request.cookies.get("username")
+    user = _current_user(request)
     new_sale = Sale(
         product_name=product_name,
         product_description=product_description,
@@ -116,7 +121,7 @@ async def edit_sale(
     region_id: int = Form(...),  # Existing field for region
     referrer: str = Form(None)
 ):
-    user = request.cookies.get("username")
+    user = _current_user(request)
     sale = db.query(Sale).filter(Sale.id == sale_id).first()
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")
@@ -153,7 +158,7 @@ async def edit_sale(
 
 @router.post("/delete/{sale_id}", response_class=HTMLResponse)
 async def delete_sale(sale_id: int, request: Request, db: Session = Depends(get_db)):
-    user = request.cookies.get("username")
+    user = _current_user(request)
     sale = db.query(Sale).filter(Sale.id == sale_id).first()
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")
@@ -207,7 +212,7 @@ async def order_details(id: int, request: Request, db: Session = Depends(get_db)
 
 @router.post("/update_status/{sale_id}", response_class=RedirectResponse)
 async def update_status(request: Request, sale_id: int, delivery_status: str = Form(...), redirect_url: str = Form(...), db: Session = Depends(get_db)):
-    user = request.cookies.get("username")
+    user = _current_user(request)
     sale = db.query(Sale).filter(Sale.id == sale_id).first()
     if not sale:
         raise HTTPException(status_code=404, detail="Sale not found")

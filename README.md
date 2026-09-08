@@ -55,12 +55,13 @@ Profit logic in `routers/dashboard.py` (active = not `Returned`/`Cancelled`):
 
 ## Routes
 
-Auth is cookie-based (`authenticated=true`, `username`). `app.py:check_authentication` redirects all paths except `/login`, `/token`, `/signup` to `/login?next=...`.
+Auth is session-based (`request.session["authenticated"]`). `app.py:check_authentication` redirects all paths except `/login`, `/token`, `/signup`, `/logout`, `/static/*`, `/favicon.ico` to `/login?next=...`.
 
 | Router | Method + Path | Description |
 |---|---|---|
 | dashboard | `GET /` | Totals, averages, profit, status counts, sales by region/supplier, monthly sales + order counts, top-5 products |
-| auth | `GET/POST /login` | Redis `HGET users <username>` password check, writes `UserLog`, sets cookies, redirects to `next` (default `/admin`) |
+| auth | `GET/POST /login` | Redis `HGET users <username>` password check (PBKDF2 hash, legacy plaintext auto-upgraded), writes `UserLog`, sets server session, redirects to `next` (default `/admin`) |
+| auth | `GET /logout` | Clears session, redirects to `/login` |
 | auth | `GET /success_redirect`, `GET /user_logs` | Post-login page; login audit list |
 | sales | `GET/POST /create_sale` | Create `Sale` + `CRUDLog(CREATE)` |
 | sales | `GET/POST /edit/{sale_id}` | Update `Sale` + `CRUDLog(UPDATE)`, redirects to `referrer` or `/admin` |
@@ -84,28 +85,38 @@ Auth is cookie-based (`authenticated=true`, `username`). `app.py:check_authentic
 1. Install deps:
    ```bash
    pip install -r requirements.txt
-   # also needed but missing from requirements.txt:
-   pip install python-dotenv redis sqlalchemy-sqlitecloud
    ```
-2. Configure (see Security section — currently hardcoded):
-   - SQLite Cloud URL, Redis host/port/username/password, session `secret_key`.
+2. Configure:
+   ```bash
+   cp .env.example .env
+   # edit .env: DATABASE_URL, SESSION_SECRET_KEY, REDIS_HOST/PORT/USERNAME/PASSWORD
+   # generate a secret: openssl rand -hex 32
+   ```
+   Set `SESSION_HTTPS_ONLY=true` when serving over HTTPS.
 3. Run:
    ```bash
    uvicorn app:app --reload
    # open http://127.0.0.1:8000/ -> redirects to /login
    ```
-4. Seed auth user in Redis (auth expects `users` hash):
-   ```
-   HSET users <username> <password>
+4. Seed auth user in Redis (passwords are PBKDF2-SHA256 hashes, stdlib only):
+   ```bash
+   python3 -c "
+   import hashlib, secrets
+   pw = input('new password: ')
+   salt = secrets.token_hex(16)
+   dk = hashlib.pbkdf2_hmac('sha256', pw.encode(), bytes.fromhex(salt), 200000)
+   print(f'pbkdf2_sha256\$200000\${salt}\${dk.hex()}')
+   "
+   # then: HSET users <username> <hash above>
+   # Legacy plaintext entries still work once and are auto-upgraded to a hash on next login.
    ```
 
 No tests, Dockerfile, or CI are included.
 
-## Security / TODO Before Production
+## Security
 
-- **Leaked secrets in repo:** `database.py` hardcodes a SQLite Cloud URL + API key; `routers/auth.py` hardcodes Redis host/password; `app.py` uses `SessionMiddleware(secret_key="secret")`. Move all to `.env` (already gitignored) + `os.getenv`, rotate the exposed keys.
-- `requirements.txt` is missing `python-dotenv` (imported in `database.py`) and pins no versions; `redis` dep is unused except in auth.
-- Auth is plaintext password compare + unsigned `authenticated` cookie with no logout, hashing, or role checks (admin auth checks are commented out).
-- `admin.py` has duplicated `delete`/`restore` handlers; `admin.py` vs `regions.py` duplicate region routes.
-- `database.py:init_db()` runs `create_all` on import — fine for dev, use migrations (Alembic) in prod.
-- `func.strftime('%Y-%m', ...)` monthly grouping is SQLite-specific; will break on Postgres/MySQL.
+- Secrets (`DATABASE_URL`, `SESSION_SECRET_KEY`, Redis creds) come from `.env` (gitignored); see `.env.example`. No credentials in code.
+- Auth uses server-side sessions (`SessionMiddleware`, `lax` SameSite, optional HTTPS-only) instead of spoofable `authenticated=true` cookies. Generic `invalid_credentials` error, open-redirect guard on `next`, `GET /logout` clears the session.
+- Passwords verified with PBKDF2-SHA256 (200k iterations) + `hmac.compare_digest`; legacy plaintext Redis entries are auto-migrated to hashes.
+- **You must still rotate** the previously hardcoded SQLite Cloud API key + Redis password — they remain in git history.
+- Remaining TODO: `admin.py` duplicated `delete`/`restore` handlers; `admin.py` vs `regions.py` duplicate region routes; `init_db()` runs at startup (use Alembic in prod); `func.strftime('%Y-%m', ...)` is SQLite-specific.
